@@ -323,8 +323,8 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 			}
 
 			//TODO did making this private class non-static break it?
-			//TODO if hasmethod
-			plugin.Method.getAccount(player.getName()).subtract(plugin.TELEPORT_COST);
+			if (plugin.Method != null)
+				plugin.Method.getAccount(player.getName()).subtract(plugin.TELEPORT_COST);
 			player.teleport(lSendTo);
 
 			mTimeouts.put(player.getName(),System.currentTimeMillis()+5000);

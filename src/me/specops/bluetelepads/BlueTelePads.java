@@ -1,5 +1,9 @@
 package me.specops.bluetelepads;
 
+import java.util.logging.Logger;
+
+import me.specops.bluetelepads.register.payment.Method;
+
 import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
@@ -9,15 +13,15 @@ import org.bukkit.plugin.PluginManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import org.bukkit.plugin.Plugin;
-import com.nijikokun.register.payment.Method;
 
-public class BlueTelePads extends JavaPlugin{
+public class BlueTelePads extends JavaPlugin {
 	private final BlueTelePadsPlayerListener playerListener = new BlueTelePadsPlayerListener(this);
 	private final BlueTelePadsServerListener serverListener = new BlueTelePadsServerListener(this);
 
+	public static Logger log;
 	public static PermissionHandler Permissions;
-	public PluginManager pm = getServer().getPluginManager();
-	public PluginDescriptionFile pdfFile = getDescription();
+	public PluginManager pm;
+	public PluginDescriptionFile pdfFile;
 
 	public Method Method = null;
 
@@ -32,11 +36,15 @@ public class BlueTelePads extends JavaPlugin{
 
 
 	public void onEnable(){
-		Configuration config = getConfiguration();
+		System.out.println("[BlueTelePads] [Debug] Enabling...");
+		log = Logger.getLogger("Minecraft");
+		Configuration config = this.getConfiguration();
+		pm = getServer().getPluginManager();
+		pdfFile = getDescription();
 
 		//set default values if necessary
 		if(config.getInt("max_telepad_distance",-1) == -1){
-			System.out.println("[BlueTelepads] Creating default config file...");
+			log.info("[BlueTelepads] Creating default config file...");
 
 			config.setProperty("max_telepad_distance",MAX_DISTANCE);
 			config.setProperty("use_permissions",USE_PERMISSIONS);
@@ -60,10 +68,10 @@ public class BlueTelePads extends JavaPlugin{
 		if(USE_PERMISSIONS){
 			Plugin perm = this.getServer().getPluginManager().getPlugin("Permissions");
 			if(perm != null){
-				System.out.println("[BlueTelePads] Permissions integration enabled");
+				log.info("[BlueTelePads] Permissions integration enabled");
 				Permissions = ((Permissions) perm).getHandler();
 			}else{
-				System.out.println("[BlueTelePads] Permissions integration could not be enabled!");
+				log.info("[BlueTelePads] Permissions integration could not be enabled!");
 			}
 		}
 
@@ -72,11 +80,11 @@ public class BlueTelePads extends JavaPlugin{
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
 		//TODO more event registrations here
 
-		System.out.println("["+pdfFile.getName() + "] version " + pdfFile.getVersion() + " ENABLED" );
+		log.info("["+pdfFile.getName() + "] version " + pdfFile.getVersion() + " ENABLED" );
 	}
 
 	public void onDisable(){
-		System.out.println("[BlueTelePads] Disabled");
+		log.info("[BlueTelePads] Disabled");
 		pdfFile = null;
 		Method = null;
 		pm = null;
