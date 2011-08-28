@@ -124,9 +124,8 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 			//Verify receiver is a working telepad
 			if(bReceiverLapis != null){
 				//Verify permissions
-				if(plugin.USE_PERMISSIONS && !BlueTelePads.Permissions.has(event.getPlayer(),"BlueTelePads.Use")){
+				if(!event.getPlayer().hasPermission("BlueTelePads.Use")){
 					msgPlayer(event.getPlayer(),"You do not have permission to use telepads");
-
 					return;
 				}
 
@@ -178,8 +177,7 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 		&& event.getClickedBlock() != null
 		&& isTelePadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))){
 			//Verify permissions
-			if((plugin.USE_PERMISSIONS && !BlueTelePads.Permissions.has(event.getPlayer(),"BlueTelePads.Create"))
-			|| (plugin.OP_ONLY && !event.getPlayer().isOp())){
+			if(!event.getPlayer().hasPermission("BlueTelePads.Create")) {			
 				msgPlayer(event.getPlayer(),"You do not have permission to create a telepad!");
 				return;
 			}
