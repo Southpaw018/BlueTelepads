@@ -2,7 +2,7 @@
  Description
 =============
 BlueTelepads - Seamless, commandless, admin or player controlled multiworld teleport
-Create a system of telepads for your server!
+Create a system of symmetric telepads for your server!
 
 Download (Direct JAR): http://www.moofit.com/minecraft/BlueTelepads.jar
 Source: https://github.com/Southpaw018/BlueTelepads
@@ -29,13 +29,15 @@ That's it!
 =============
  Features
 =============
+Symmetric telepad system (two telepads are linked to each other) 
 Commandless operation
 Telepad creation can be controlled by admins or left to players
 No databases
 Automatically links with various economy plugins via Nijikokun's Register API
-Distance between telepads is configurable
+Allowed maximum distance between telepads is configurable
 Telepad materials are configurable
 Warmup and cooldown times are configurable
+Players and groups with permissions can create asymmetric free telepads (free to go out, but pay to come back, or vice versa)
 
 =============
  Permissions
