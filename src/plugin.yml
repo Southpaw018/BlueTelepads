@@ -1,4 +1,6 @@
-name: BlueTelePads
-main: me.specops.bluetelepads.BlueTelePads
-version: 0.5.3
-author: Specops
+name: BlueTelepads
+main: com.MoofIT.Minecraft.BlueTelepads.BlueTelepads
+version: 1.0
+description: Seamless, commandless, admin or player controlled multiworld teleport for Minecraft
+author: Southpaw018
+website: http://www.moofit.com

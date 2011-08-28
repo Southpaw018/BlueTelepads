@@ -1,4 +1,4 @@
-package me.specops.bluetelepads;
+package com.MoofIT.Minecraft.BlueTelepads;
 
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -14,23 +14,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.World;
 
-public class BlueTelePadsPlayerListener extends PlayerListener {
-	private final BlueTelePads plugin;
+public class BlueTelepadsPlayerListener extends PlayerListener {
+	private final BlueTelepads plugin;
 	private static Map<String, Location> mLapisLinks  = new HashMap<String, Location>();
 	private static Map<String, Long> mTimeouts = new HashMap<String, Long>();
 
 	//Ticks to wait between standing on a telepad, and sending the player
 	private int SEND_WAIT_TIMER = 60;
 
-	public BlueTelePadsPlayerListener(BlueTelePads instance){
+	public BlueTelepadsPlayerListener(BlueTelepads instance){
 		this.plugin = instance;
 	}
 
 	public static void msgPlayer(Player player,String msg){
-		player.sendMessage(ChatColor.DARK_AQUA+"[TelePad] "+ChatColor.AQUA+msg);
+		player.sendMessage(ChatColor.DARK_AQUA+"[BlueTelepads] "+ChatColor.AQUA+msg);
 	}
 
-	public boolean isTelePadLapis(Block lapisBlock){
+	public boolean isTelepadLapis(Block lapisBlock){
 		if((plugin.TELEPAD_CENTER_ID == 0 || lapisBlock.getTypeId() == plugin.TELEPAD_CENTER_ID)
 		&& (plugin.TELEPAD_SURROUNDING_ID == 0
 			|| (lapisBlock.getRelative(BlockFace.EAST).getTypeId() == plugin.TELEPAD_SURROUNDING_ID
@@ -72,14 +72,14 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 		
 			Block bReceiverLapis = world.getBlockAt(toInt(sXYZ[0]),toInt(sXYZ[1]),toInt(sXYZ[2]));
 
-			if(isTelePadLapis(bReceiverLapis)){
+			if(isTelepadLapis(bReceiverLapis)){
 				return bReceiverLapis;
 			}
 		}
 		return null;
 	}
 
-	//currently assumes you checked both blocks with isTelePadLapis
+	//currently assumes you checked both blocks with isTelepadLapis
 	private void linkTelepadLapisReceivers(Block bLapis1,Block bLapis2){
 		Sign sbLapis1 = (Sign) bLapis1.getRelative(BlockFace.DOWN).getState();
 		Sign sbLapis2 = (Sign) bLapis2.getRelative(BlockFace.DOWN).getState();
@@ -101,7 +101,7 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 		return (int) Math.sqrt(Math.pow(loc2.getBlockX()-loc1.getBlockX(),2)+Math.pow(loc2.getBlockY()-loc1.getBlockY(),2)+Math.pow(loc2.getBlockZ()-loc1.getBlockZ(),2));
 	}
 
-	private boolean TelePadsWithinDistance(Block block1,Block block2){
+	private boolean TelepadsWithinDistance(Block block1,Block block2){
 		if(plugin.MAX_DISTANCE == 0){
 			return true;
 		}
@@ -116,7 +116,7 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 		//Using a telepad, note we verify the timeout here after checking if it's a telepad
 		if(event.getAction() == Action.PHYSICAL
 		&& event.getClickedBlock() != null
-		&& isTelePadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))
+		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))
 		&& (!mTimeouts.containsKey(event.getPlayer().getName()) || mTimeouts.get(event.getPlayer().getName()) < System.currentTimeMillis())){
 			Block bSenderLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 			Block bReceiverLapis = getTelepadLapisReceiver(bSenderLapis);
@@ -124,13 +124,13 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 			//Verify receiver is a working telepad
 			if(bReceiverLapis != null){
 				//Verify permissions
-				if(!event.getPlayer().hasPermission("BlueTelePads.Use")){
+				if(!event.getPlayer().hasPermission("BlueTelepads.Use")){
 					msgPlayer(event.getPlayer(),"You do not have permission to use telepads");
 					return;
 				}
 
 				//Verify distance
-				if(!TelePadsWithinDistance(bSenderLapis,bReceiverLapis)){
+				if(!TelepadsWithinDistance(bSenderLapis,bReceiverLapis)){
 					msgPlayer(event.getPlayer(),ChatColor.RED+"Error: Telepads are too far apart! (Distance:"+getDistance(bSenderLapis.getLocation(),bReceiverLapis.getLocation())+",MaxAllowed:"+plugin.MAX_DISTANCE+")");
 
 					return;
@@ -175,9 +175,9 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 		else if(event.getItem() != null
 		&& event.getItem().getType() == Material.REDSTONE
 		&& event.getClickedBlock() != null
-		&& isTelePadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))){
+		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))){
 			//Verify permissions
-			if(!event.getPlayer().hasPermission("BlueTelePads.Create")) {			
+			if(!event.getPlayer().hasPermission("BlueTelepads.Create")) {			
 				msgPlayer(event.getPlayer(),"You do not have permission to create a telepad!");
 				return;
 			}
@@ -209,10 +209,10 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 					//Setting up the second link
 					Block bFirstLapis = mLapisLinks.get(event.getPlayer().getName()).getBlock();
 
-					if(isTelePadLapis(bFirstLapis)){
+					if(isTelepadLapis(bFirstLapis)){
 						Block bSecondLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
-						if(!TelePadsWithinDistance(bFirstLapis,bSecondLapis)){
+						if(!TelepadsWithinDistance(bFirstLapis,bSecondLapis)){
 							msgPlayer(event.getPlayer(),ChatColor.RED+"Error: Telepads are too far apart! (Distance:"+getDistance(bFirstLapis.getLocation(),event.getClickedBlock().getLocation())+",MaxAllowed:"+plugin.MAX_DISTANCE+")");
 
 							return;

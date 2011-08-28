@@ -1,4 +1,4 @@
-package me.specops.bluetelepads;
+package com.MoofIT.Minecraft.BlueTelepads;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,9 +22,9 @@ import com.nijikokun.register.payment.Method;
  * @author Jim Drey
  *
  */
-public class BlueTelePads extends JavaPlugin {
-	private final BlueTelePadsPlayerListener playerListener = new BlueTelePadsPlayerListener(this);
-	private BlueTelePadsServerListener serverListener;
+public class BlueTelepads extends JavaPlugin {
+	private final BlueTelepadsPlayerListener playerListener = new BlueTelepadsPlayerListener(this);
+	private BlueTelepadsServerListener serverListener;
 
 	public static Logger log;
 	public PluginManager pm;
@@ -77,7 +77,7 @@ public class BlueTelePads extends JavaPlugin {
 	}
 
 	public void onDisable(){
-		log.info("[BlueTelePads] Shutting down.");
+		log.info("[BlueTelepads] Shutting down.");
 		pdfFile = null;
 		Method = null;
 		pm = null;
@@ -87,25 +87,25 @@ public class BlueTelePads extends JavaPlugin {
 	private boolean loadRegister() {
 		try {
 			Class.forName("com.nijikokun.register.payment.Methods");
-			serverListener = new BlueTelePadsServerListener(this);
+			serverListener = new BlueTelepadsServerListener(this);
 			return true;
 		} catch (ClassNotFoundException e) {
 			try {
-				BlueTelePads.log.info("[BlueTelePads] Register library not found! Downloading...");
+				BlueTelepads.log.info("[BlueTelepads] Register library not found! Downloading...");
 				if (!new File("lib").isDirectory())
 					if (!new File("lib").mkdir())
-						BlueTelePads.log.severe("[BlueTelePads] Error creating lib directory. Please make sure Craftbukkit has permissions to write to the Minecraft directory and there is no file named \"lib\" in that location.");
+						BlueTelepads.log.severe("[BlueTelepads] Error creating lib directory. Please make sure Craftbukkit has permissions to write to the Minecraft directory and there is no file named \"lib\" in that location.");
 				URL Register = new URL("https://github.com/iConomy/Register/raw/master/dist/Register.jar");
 				ReadableByteChannel rbc = Channels.newChannel(Register.openStream());
 				FileOutputStream fos = new FileOutputStream("lib/Register.jar");
 				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-				BlueTelePads.log.info("[BlueTelePads] Register library downloaded. Server reboot required to load.");
+				BlueTelepads.log.info("[BlueTelepads] Register library downloaded. Server reboot required to load.");
 			} catch (MalformedURLException ex) {
-				BlueTelePads.log.warning("[BlueTelePads] Error accessing Register lib URL: " + ex);
+				BlueTelepads.log.warning("[BlueTelepads] Error accessing Register lib URL: " + ex);
 			} catch (FileNotFoundException ex) {
-				BlueTelePads.log.warning("[BlueTelePads] Error accessing Register lib URL: " + ex);
+				BlueTelepads.log.warning("[BlueTelepads] Error accessing Register lib URL: " + ex);
 			} catch (IOException ex) {
-				BlueTelePads.log.warning("[BlueTelePads] Error downloading Register lib: " + ex);
+				BlueTelepads.log.warning("[BlueTelepads] Error downloading Register lib: " + ex);
 			} finally {
 				pm.disablePlugin(this);
 			}
