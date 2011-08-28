@@ -1,0 +1,19 @@
+Core:
+    maxTelepadDistance: 0
+    disableTeleportMessage: false
+
+    #Lapis block: 22; Gold block: 41; Diamond block: 57; Moss stone: 48
+    telepadCenterID: 22
+Time:
+    disableTeleportWait: false
+    
+    #If teleport wait is not disabled, this is the number of seconds the player must hold still before they are teleported
+    sendWait: 3
+Economy:
+    teleportCost: 0
+
+    #Stone: 0; Sandstone: 1; Wood: 2; Cobblestone: 3
+    telepadSurroundingNormal: 0 
+    telepadSurroundingFree: 1
+
+configVer: 1

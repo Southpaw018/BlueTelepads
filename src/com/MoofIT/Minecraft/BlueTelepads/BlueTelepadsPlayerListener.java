@@ -18,9 +18,6 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	private static HashMap<String, Location> lapisLinks  = new HashMap<String, Location>();
 	private static HashMap<String, Long> teleportTimeouts = new HashMap<String, Long>();
 
-	//Ticks to wait between standing on a telepad, and sending the player
-	private int sendWaitTimer = 60;
-
 	public BlueTelepadsPlayerListener(BlueTelepads instance) {
 		this.plugin = instance;
 	}
@@ -29,20 +26,19 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		player.sendMessage(ChatColor.DARK_AQUA + "[BlueTelepads] " + ChatColor.AQUA + msg);
 	}
 
-	public boolean isTelepadLapis(Block lapisBlock) { //TODO check
-		if ((plugin.telepadCenterID == 0 || lapisBlock.getTypeId() == plugin.telepadCenterID)
-		&& (plugin.telepadSurroundingID == 0
-			|| (lapisBlock.getRelative(BlockFace.EAST).getTypeId() == plugin.telepadSurroundingID
-				&& lapisBlock.getRelative(BlockFace.WEST).getTypeId() == plugin.telepadSurroundingID
-				&& lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == plugin.telepadSurroundingID
-				&& lapisBlock.getRelative(BlockFace.SOUTH).getTypeId() == plugin.telepadSurroundingID))
-		&& (lapisBlock.getRelative(BlockFace.DOWN).getType() == Material.SIGN_POST
-				|| lapisBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-		&& lapisBlock.getRelative(BlockFace.UP).getType() == Material.STONE_PLATE) {
-			return true;
+	public boolean isTelepadLapis(Block lapisBlock) {
+		if (lapisBlock.getTypeId() != plugin.telepadCenterID) return false;
+		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH};
+		for (BlockFace check : surroundingChecks) {
+			if (lapisBlock.getRelative(check).getTypeId() != 43
+			  && (lapisBlock.getRelative(check).getData() != plugin.telepadSurroundingNormal
+			    || lapisBlock.getRelative(check).getData() != plugin.telepadSurroundingFree)) return false;
 		}
-		return false;
+		if (lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.SIGN_POST && lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.WALL_SIGN) return false;
+		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
+		return true;
 	}
+
 
 	private String toHex(int number) {
 		return Integer.toHexString(number + 32000);
@@ -159,7 +155,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				if (plugin.disableTeleportWait) {
 					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(event.getPlayer(),event.getPlayer().getLocation(),senderLapis,receiverLapis,plugin.disableTeleportWait));
 				} else {
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(event.getPlayer(),event.getPlayer().getLocation(),senderLapis,receiverLapis,plugin.disableTeleportWait),sendWaitTimer);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(event.getPlayer(),event.getPlayer().getLocation(),senderLapis,receiverLapis,plugin.disableTeleportWait),plugin.sendWait * 20L);
 			   }
 
 
@@ -228,17 +224,10 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		else if (event.getItem() != null
 		&& event.getItem().getType() == Material.REDSTONE
 		&& event.getClickedBlock() != null
-		&& event.getClickedBlock().getType() == Material.LAPIS_BLOCK) {
+		&& event.getClickedBlock().getTypeId() == plugin.telepadCenterID) {
 			Block resetLapis = event.getClickedBlock();
 			if (resetLapis.getType() == Material.AIR
-			&& (plugin.telepadSurroundingID == 0
-				|| (resetLapis.getRelative(BlockFace.EAST).getTypeId() == plugin.telepadSurroundingID
-					&& resetLapis.getRelative(BlockFace.WEST).getTypeId() == plugin.telepadSurroundingID
-					&& resetLapis.getRelative(BlockFace.NORTH).getTypeId() == plugin.telepadSurroundingID
-					&& resetLapis.getRelative(BlockFace.SOUTH).getTypeId() == plugin.telepadSurroundingID))
-			&& (resetLapis.getRelative(BlockFace.DOWN).getType() == Material.SIGN_POST
-				|| resetLapis.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-			&& resetLapis.getRelative(BlockFace.UP).getType() == Material.STONE_PLATE) {//*phew*
+			&& (isTelepadLapis(resetLapis))) {//*phew*
 				//We checked that it's a sign above
 				Sign resetSign = (Sign)resetLapis.getRelative(BlockFace.DOWN).getState();
 

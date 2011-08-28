@@ -33,12 +33,17 @@ public class BlueTelepads extends JavaPlugin {
 
 	public Method Method = null;
 
+	//Config defaults
 	public int maxDistance = 0;
-	public boolean disableTeleportWait = false;
 	public boolean disableTeleportMessage = false;
 	public int telepadCenterID = 22;
-	public int telepadSurroundingID = 43;
+
+	public boolean disableTeleportWait = false;
+	public int sendWait = 3;
+
 	public double teleportCost = 0;
+	public short telepadSurroundingNormal = 0;
+	public short telepadSurroundingFree = 1;
 
 	public void onEnable() {
 		log = Logger.getLogger("Minecraft");
@@ -67,12 +72,16 @@ public class BlueTelepads extends JavaPlugin {
 		config = this.getConfiguration();
 
 		//TODO check configVer, etc
-		maxDistance = config.getInt("max_telepad_distance",maxDistance);
-		disableTeleportWait = config.getBoolean("disable_teleport_wait",disableTeleportWait);
-		disableTeleportMessage = config.getBoolean("disable_teleport_message",disableTeleportMessage);
-		telepadCenterID = config.getInt("telepad_center",telepadCenterID);
-		telepadSurroundingID = config.getInt("telepad_surrounding",telepadSurroundingID);
-		teleportCost = config.getDouble("teleport_cost", teleportCost);
+		maxDistance = config.getInt("Core.maxTelepadDistance",maxDistance);
+		disableTeleportMessage = config.getBoolean("Core.disableTeleportMessage",disableTeleportMessage);
+		telepadCenterID = config.getInt("Core.telepadCenterID",telepadCenterID);
+
+		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
+		sendWait = config.getInt("Time.sendWait", sendWait);
+		
+		teleportCost = config.getDouble("Economy.teleportCost", teleportCost);
+		telepadSurroundingNormal = (short)config.getInt("Economy.telepadSurroundingNormal", telepadSurroundingNormal);
+		telepadSurroundingFree = (short)config.getInt("Economy.telepadSurroundingFree", telepadSurroundingFree);
 	}
 
 	//returns: true, loaded; false, not loaded OR new
