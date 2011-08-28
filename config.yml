@@ -7,6 +7,9 @@ Core:
 
     #Put the player on the slab across from the sign instead of on the pressure plate
     useSlabAsDestination: false
+
+    #Check for new versions on startup
+    versionCheck: true
 Time:
     disableTeleportWait: false
     

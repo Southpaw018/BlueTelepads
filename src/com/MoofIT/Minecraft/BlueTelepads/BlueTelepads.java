@@ -1,9 +1,11 @@
 package com.MoofIT.Minecraft.BlueTelepads;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -38,6 +40,7 @@ public class BlueTelepads extends JavaPlugin {
 	public boolean disableTeleportMessage = false;
 	public int telepadCenterID = 22;
 	public boolean useSlabAsDestination = false;
+	public boolean versionCheck = true;
 
 	public boolean disableTeleportWait = false;
 	public int sendWait = 3;
@@ -56,8 +59,9 @@ public class BlueTelepads extends JavaPlugin {
 		pm = getServer().getPluginManager();
 		pdfFile = getDescription();
 
-		loadConfig();
 		if (!loadRegister()) return;
+		loadConfig();
+		if (versionCheck) versionCheck();
 
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
@@ -105,6 +109,7 @@ public class BlueTelepads extends JavaPlugin {
 		disableTeleportMessage = config.getBoolean("Core.disableTeleportMessage",disableTeleportMessage);
 		telepadCenterID = config.getInt("Core.telepadCenterID",telepadCenterID);
 		useSlabAsDestination = config.getBoolean("Core.useSlabAsDestination", useSlabAsDestination);
+		versionCheck = config.getBoolean("Core.versionCheck", versionCheck);
 
 		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
 		sendWait = config.getInt("Time.sendWait", sendWait);
@@ -144,6 +149,34 @@ public class BlueTelepads extends JavaPlugin {
 				pm.disablePlugin(this);
 			}
 			return false;
+		}
+	}
+
+	public void versionCheck() {
+		String thisVersion = getDescription().getVersion();
+		URL url = null;
+		try {
+			url = new URL("http://www.moofit.com/minecraft/bluetelepads.ver?v=" + thisVersion);
+			BufferedReader in = null;
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+			String newVersion = "";
+			String line;
+			while ((line = in.readLine()) != null) {
+				newVersion += line;
+			}
+			in.close();
+			if (!newVersion.equals(thisVersion)) {
+				log.warning("[BlueTelepads] BlueTelepads is out of date! This version: " + thisVersion + "; latest version: " + newVersion + ".");
+			}
+			else {
+				log.info("[BlueTelepads] BlueTelepads is up to date at version " + thisVersion + ".");
+			}
+		}
+		catch (MalformedURLException ex) {
+			log.warning("[BlueTelepads] Error accessing update URL.");
+		}
+		catch (IOException ex) {
+			log.warning("[BlueTelepads] Error checking for update.");
 		}
 	}
 
