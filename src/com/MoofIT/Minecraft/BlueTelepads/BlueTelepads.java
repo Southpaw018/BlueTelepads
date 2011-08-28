@@ -29,6 +29,7 @@ public class BlueTelepads extends JavaPlugin {
 	public static Logger log;
 	public PluginManager pm;
 	public PluginDescriptionFile pdfFile;
+	private Configuration config;
 
 	public Method Method = null;
 
@@ -39,33 +40,12 @@ public class BlueTelepads extends JavaPlugin {
 	public int TELEPAD_SURROUNDING_ID = 43;
 	public double TELEPORT_COST = 0;
 
-	public void onEnable(){
+	public void onEnable() {
 		log = Logger.getLogger("Minecraft");
-		Configuration config = this.getConfiguration();
 		pm = getServer().getPluginManager();
 		pdfFile = getDescription();
 
-		//set default values if necessary
-		if(config.getInt("max_telepad_distance",-1) == -1){
-			log.info("[BlueTelepads] Creating default config file...");
-
-			config.setProperty("max_telepad_distance",MAX_DISTANCE);
-			config.setProperty("disable_teleport_wait",DISABLE_TELEPORT_WAIT);
-			config.setProperty("disable_teleport_message", DISABLE_TELEPORT_MESSAGE);
-			config.setProperty("telepad_center",TELEPAD_CENTER_ID);
-			config.setProperty("telepad_surrounding",TELEPAD_SURROUNDING_ID);
-			config.setProperty("teleport_cost",TELEPORT_COST);
-
-			config.save();
-		}
-
-		MAX_DISTANCE = config.getInt("max_telepad_distance",MAX_DISTANCE);
-		DISABLE_TELEPORT_WAIT = config.getBoolean("disable_teleport_wait",DISABLE_TELEPORT_WAIT);
-		DISABLE_TELEPORT_MESSAGE = config.getBoolean("disable_teleport_message",DISABLE_TELEPORT_MESSAGE);
-		TELEPAD_CENTER_ID = config.getInt("telepad_center",TELEPAD_CENTER_ID);
-		TELEPAD_SURROUNDING_ID = config.getInt("telepad_surrounding",TELEPAD_SURROUNDING_ID);
-		TELEPORT_COST = config.getDouble("teleport_cost", TELEPORT_COST);
-
+		loadConfig();
 		if (!loadRegister()) return;
 
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
@@ -73,14 +53,26 @@ public class BlueTelepads extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
 		//TODO more event registrations here?
 
-		log.info("["+pdfFile.getName() + "] version " + pdfFile.getVersion() + " ENABLED" );
+		log.info(pdfFile.getName() + " v." + pdfFile.getVersion() + " is enabled.");
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		log.info("[BlueTelepads] Shutting down.");
 		pdfFile = null;
 		Method = null;
 		pm = null;
+	}
+
+	private void loadConfig() {
+		config = this.getConfiguration();
+
+		//TODO check configVer, etc
+		MAX_DISTANCE = config.getInt("max_telepad_distance",MAX_DISTANCE);
+		DISABLE_TELEPORT_WAIT = config.getBoolean("disable_teleport_wait",DISABLE_TELEPORT_WAIT);
+		DISABLE_TELEPORT_MESSAGE = config.getBoolean("disable_teleport_message",DISABLE_TELEPORT_MESSAGE);
+		TELEPAD_CENTER_ID = config.getInt("telepad_center",TELEPAD_CENTER_ID);
+		TELEPAD_SURROUNDING_ID = config.getInt("telepad_surrounding",TELEPAD_SURROUNDING_ID);
+		TELEPORT_COST = config.getDouble("teleport_cost", TELEPORT_COST);
 	}
 
 	//returns: true, loaded; false, not loaded OR new
