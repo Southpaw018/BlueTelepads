@@ -33,12 +33,12 @@ public class BlueTelepads extends JavaPlugin {
 
 	public Method Method = null;
 
-	public int MAX_DISTANCE = 0;
-	public boolean DISABLE_TELEPORT_WAIT = false;
-	public boolean DISABLE_TELEPORT_MESSAGE = false;
-	public int TELEPAD_CENTER_ID = 22;
-	public int TELEPAD_SURROUNDING_ID = 43;
-	public double TELEPORT_COST = 0;
+	public int maxDistance = 0;
+	public boolean disableTeleportWait = false;
+	public boolean disableTeleportMessage = false;
+	public int telepadCenterID = 22;
+	public int telepadSurroundingID = 43;
+	public double teleportCost = 0;
 
 	public void onEnable() {
 		log = Logger.getLogger("Minecraft");
@@ -67,15 +67,17 @@ public class BlueTelepads extends JavaPlugin {
 		config = this.getConfiguration();
 
 		//TODO check configVer, etc
-		MAX_DISTANCE = config.getInt("max_telepad_distance",MAX_DISTANCE);
-		DISABLE_TELEPORT_WAIT = config.getBoolean("disable_teleport_wait",DISABLE_TELEPORT_WAIT);
-		DISABLE_TELEPORT_MESSAGE = config.getBoolean("disable_teleport_message",DISABLE_TELEPORT_MESSAGE);
-		TELEPAD_CENTER_ID = config.getInt("telepad_center",TELEPAD_CENTER_ID);
-		TELEPAD_SURROUNDING_ID = config.getInt("telepad_surrounding",TELEPAD_SURROUNDING_ID);
-		TELEPORT_COST = config.getDouble("teleport_cost", TELEPORT_COST);
+		maxDistance = config.getInt("max_telepad_distance",maxDistance);
+		disableTeleportWait = config.getBoolean("disable_teleport_wait",disableTeleportWait);
+		disableTeleportMessage = config.getBoolean("disable_teleport_message",disableTeleportMessage);
+		telepadCenterID = config.getInt("telepad_center",telepadCenterID);
+		telepadSurroundingID = config.getInt("telepad_surrounding",telepadSurroundingID);
+		teleportCost = config.getDouble("teleport_cost", teleportCost);
 	}
 
 	//returns: true, loaded; false, not loaded OR new
+	
+	//TODO Javadoc
 	private boolean loadRegister() {
 		try {
 			Class.forName("com.nijikokun.register.payment.Methods");
