@@ -1,0 +1,102 @@
+=============
+ Description
+=============
+BlueTelepads - Seamless, commandless, admin or player controlled multiworld teleport
+Create a system of telepads for your server!
+
+Download (Direct JAR): http://www.moofit.com/minecraft/BlueTelepads.jar
+Source: https://github.com/Southpaw018/BlueTelepads
+
+=============
+ Use
+=============
+To use BlueTelepads, build two telepads. For both pads, you'll need:
+  - 2 signs
+  - 2 center blocks (lapis lazuli by default, where the plugin gets its name!)
+  - 16 slabs (smooth stone by default)
+  - 2 stone pressure plates
+Once you have your materials together, build your two telepads:
+  - Place the center block.
+  - Place double slabs to the north, south, east, and west of the center block.
+  - Place a sign underneath the center block. Make the third line of the sign the telepad's location name, if you want.
+      For example, if you have a telepad on the roof of your house, and you set the third line to "My Roof," when you teleport there,
+      BlueTelepads will tell you "Sending you to My Roof."
+  - Place a stone pressure plate on top of the center block.
+After you've built your telepads, tap (left click) the pressure plate of both telepads with redstone.
+
+That's it! 
+
+=============
+ Features
+=============
+Commandless operation
+Telepad creation can be controlled by admins or left to players
+No databases
+Automatically links with various economy plugins via Nijikokun's Register API
+Distance between telepads is configurable
+Telepad materials are configurable
+Warmup and cooldown times are configurable
+
+=============
+ Permissions
+=============
+bluetelepads.use: Allow the player/group to use telepads
+bluetelepads.create: Allow the player/group to create new telepads that charge for use (if economy installed)
+bluetelepads.createfree: Allow the player/group to create new telepads that are free to use (if economy installed)
+
+=============
+ Commands
+=============
+None
+
+=============
+ Config
+=============
+See default config file for options and instructions.
+
+=============
+ Credits
+=============
+ne0nx3r0: ne0n was the original developer of BlueTelepads. He left his plugins up for grabs, and it was picked up and cared for by...
+Specops343: Specops picked up BlueTelepads and kept it alive after ne0n stopped development.
+
+Many thanks to both of them for their hard work on this plugin. 
+
+=============
+ Changes
+=============
+[Version 1.0]
+  - Initial public release
+============
+ Specops343
+============
+[Version 0.5.3]
+  - Update for CB1000
+============
+  ne0nx3r0
+============
+[Version 0.5.3]
+  - Sign now determines the direction you end up facing
+[Version 0.5.2]
+  - Added disable_teleport_message flag
+[Version 0.5.1]
+  - Player now lands on the receiving telepad instead of in front of it, and is facing the direction he is when he leaves
+[Version 0.5]
+  - Player now lands on the receiving telepad instead of in front of it, and is facing the direction he is when he leaves
+  - Added "telepad_center" and "telepad_surrounding" config options, so users can specify the id of the block to be used. 0 = anything
+[Version 0.4.1]
+  - Added 'disable_teleport_wait' true/false option in config.yml; this will disable the 'preparing to send you to' wait time when you step on the telepad.
+[Version 0.4]
+  - Bug fixes here and there
+  - Fixed issue with long range telepads not linking
+  - You can now reset a telepad for re-linking by breaking the pressure plate on top of it, then clicking on the lapis block with redstone. Then you can relink it!
+[Version 0.3.2]
+  - Fixed a few NPE, also added right clicking on telepads removes the stored location
+[Version 0.3.1]
+  - Changed name line on telepad signs to the 4th line
+[Version 0.3]
+  - Removed water effect, still working multi-world functionality, changed storage method for signs (for multiworld primarily), added permissions/op only support, added max_distance, added config file.
+[Version 0.2]
+  - Added timeout between ports, switched to sync instead of async events
+[Version 0.1]
+  - Initial update

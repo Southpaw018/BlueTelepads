@@ -37,13 +37,19 @@ public class BlueTelepads extends JavaPlugin {
 	public int maxDistance = 0;
 	public boolean disableTeleportMessage = false;
 	public int telepadCenterID = 22;
+	public boolean useSlabAsDestination = false;
 
 	public boolean disableTeleportWait = false;
 	public int sendWait = 3;
+	public int telepadCooldown = 5;
 
 	public double teleportCost = 0;
 	public short telepadSurroundingNormal = 0;
 	public short telepadSurroundingFree = 1;
+
+	//Config versioning
+	private int configVer = 0;
+	private final int configCurrent = 1;
 
 	public void onEnable() {
 		log = Logger.getLogger("Minecraft");
@@ -56,7 +62,6 @@ public class BlueTelepads extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
-		//TODO more event registrations here?
 
 		log.info(pdfFile.getName() + " v." + pdfFile.getVersion() + " is enabled.");
 	}
@@ -70,14 +75,40 @@ public class BlueTelepads extends JavaPlugin {
 
 	private void loadConfig() {
 		config = this.getConfiguration();
+		config.load();
 
-		//TODO check configVer, etc
+		configVer = config.getInt("configVer", configVer);
+		if (configVer == 0) {
+			try {
+				log.info("[BlueTelepads] Configuration error or no config file found. Downloading default config file...");
+				if (!new File(getDataFolder().toString()).exists()) {
+					new File(getDataFolder().toString()).mkdir();
+				}
+				URL config = new URL("https://raw.github.com/Southpaw018/BlueTelepads/master/config.yml");
+				ReadableByteChannel rbc = Channels.newChannel(config.openStream());
+				FileOutputStream fos = new FileOutputStream(this.getDataFolder().getPath() + "/config.yml");
+				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+			} catch (MalformedURLException ex) {
+				log.warning("[BlueTelepads] Error accessing default config file URL: " + ex);
+			} catch (FileNotFoundException ex) {
+				log.warning("[BlueTelepads] Error accessing default config file URL: " + ex);
+			} catch (IOException ex) {
+				log.warning("[BlueTelepads] Error downloading default config file: " + ex);
+			}
+
+		}
+		else if (configVer < configCurrent) {
+			log.warning("[BlueTelepads] Your config file is out of date! Delete your config and reload to see the new options. Proceeding using set options from config file and defaults for new options..." );
+		}
+
 		maxDistance = config.getInt("Core.maxTelepadDistance",maxDistance);
 		disableTeleportMessage = config.getBoolean("Core.disableTeleportMessage",disableTeleportMessage);
 		telepadCenterID = config.getInt("Core.telepadCenterID",telepadCenterID);
+		useSlabAsDestination = config.getBoolean("Core.useSlabAsDestination", useSlabAsDestination);
 
 		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
 		sendWait = config.getInt("Time.sendWait", sendWait);
+		telepadCooldown = config.getInt("Time.telepadCooldown", telepadCooldown);
 		
 		teleportCost = config.getDouble("Economy.teleportCost", teleportCost);
 		telepadSurroundingNormal = (short)config.getInt("Economy.telepadSurroundingNormal", telepadSurroundingNormal);
@@ -115,4 +146,6 @@ public class BlueTelepads extends JavaPlugin {
 			return false;
 		}
 	}
+
+	//TODO combine config and register lib file writing code into a function
 }

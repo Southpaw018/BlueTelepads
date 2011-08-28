@@ -4,3 +4,14 @@ version: 1.0
 description: Seamless, commandless, admin or player controlled multiworld teleport for Minecraft
 author: Southpaw018
 website: http://www.moofit.com
+
+permissions:
+  bluetelepads.use:
+    description: Allow the player/group to use telepads
+    default: true
+  bluetelepads.create:
+    description: Allow the player/group to create new telepads that charge for use (if economy installed)
+    default: op
+  bluetelepads.createfree:
+    description: Allow the player/group to create new telepads that are free to use (if economy installed)
+    default: op

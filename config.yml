@@ -4,11 +4,17 @@ Core:
 
     #Lapis block: 22; Gold block: 41; Diamond block: 57; Moss stone: 48
     telepadCenterID: 22
+
+    #Put the player on the slab across from the sign instead of on the pressure plate
+    useSlabAsDestination: false
 Time:
     disableTeleportWait: false
     
     #If teleport wait is not disabled, this is the number of seconds the player must hold still before they are teleported
     sendWait: 3
+
+    #This is the number of seconds between when players may use telepads. Minimum 1 sec
+    telepadCooldown: 5
 Economy:
     teleportCost: 0
 

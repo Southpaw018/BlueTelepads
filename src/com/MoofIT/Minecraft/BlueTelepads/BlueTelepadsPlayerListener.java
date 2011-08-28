@@ -119,8 +119,8 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			//Verify receiver is a working telepad
 			if (receiverLapis != null) {
 				//Verify permissions
-				if (!event.getPlayer().hasPermission("BlueTelepads.Use")) {
-					msgPlayer(event.getPlayer(),"You do not have permission to use telepads");
+				if (!event.getPlayer().hasPermission("bluetelepads.use")) {
+					msgPlayer(event.getPlayer(),"You do not have permission to use telepads.");
 					return;
 				}
 
@@ -167,7 +167,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		&& event.getClickedBlock() != null
 		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))) {
 			//Verify permissions
-			if (!event.getPlayer().hasPermission("BlueTelepads.Create")) {			
+			if (!event.getPlayer().hasPermission("bluetelepads.create")) { //TODO check for createfree			
 				msgPlayer(event.getPlayer(),"You do not have permission to create a telepad!");
 				return;
 			}
@@ -207,7 +207,6 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 						//The same telepad?
 						if (firstLapis == secondLapis) {
 							msgPlayer(event.getPlayer(),ChatColor.RED + "Error: You cannot connect a telepad to itself.");
-							msgPlayer(event.getPlayer(),"Well you could, but why would you want to? Maybe   you want a door or something?");
 							lapisLinks.remove(event.getPlayer().getName());
 							return;
 						}
@@ -286,12 +285,16 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 				if (signData == 0x2) {//East
 					lSendTo.setYaw(180);
+					if (plugin.useSlabAsDestination) lSendTo.setZ(lSendTo.getZ() + 1);
 				} else if (signData == 0x3) {//West
 					lSendTo.setYaw(0);
+					if (plugin.useSlabAsDestination) lSendTo.setZ(lSendTo.getZ() - 1);
 				} else if (signData == 0x4) {//North
 					lSendTo.setYaw(270);
+					if (plugin.useSlabAsDestination) lSendTo.setX(lSendTo.getZ() - 1);
 				} else {//South
 					lSendTo.setYaw(90);
+					if (plugin.useSlabAsDestination) lSendTo.setX(lSendTo.getZ() + 1);
 				}
 			} else {
 				lSendTo.setYaw(player.getLocation().getYaw());
@@ -304,7 +307,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			}
 			player.teleport(lSendTo);
 
-			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + 5000);
+			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,1) * 1000);
 		}
 	}
 }
