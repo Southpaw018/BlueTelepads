@@ -1,7 +1,6 @@
 package me.specops.bluetelepads;
 
-
-import me.specops.bluetelepads.register.payment.Methods;
+import com.nijikokun.register.payment.Methods;
 
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;

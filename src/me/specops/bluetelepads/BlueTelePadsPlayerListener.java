@@ -291,6 +291,10 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 				msgPlayer(player,"You moved, cancelling teleport!");
 				return;
 			}
+			if (!plugin.Method.getAccount(player.getName()).hasEnough(plugin.TELEPORT_COST)) {
+				msgPlayer(player,"You don't have enough to pay for a teleport.");
+				return;
+			}
 
 			if(!this.disable_teleport_wait){
 				msgPlayer(player,"Here goes nothing!");
@@ -323,8 +327,10 @@ public class BlueTelePadsPlayerListener extends PlayerListener {
 			}
 
 			//TODO did making this private class non-static break it?
-			if (plugin.Method != null)
+			if (plugin.Method != null) {
 				plugin.Method.getAccount(player.getName()).subtract(plugin.TELEPORT_COST);
+				msgPlayer(player,"You have been charged " + plugin.TELEPORT_COST + ".");
+			}
 			player.teleport(lSendTo);
 
 			mTimeouts.put(player.getName(),System.currentTimeMillis()+5000);

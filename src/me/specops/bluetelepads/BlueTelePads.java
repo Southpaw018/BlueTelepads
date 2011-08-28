@@ -1,8 +1,14 @@
 package me.specops.bluetelepads;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.logging.Logger;
-
-import me.specops.bluetelepads.register.payment.Method;
 
 import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event.Priority;
@@ -12,11 +18,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+import com.nijikokun.register.payment.Method;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * @author Jim Drey
+ *
+ */
 public class BlueTelePads extends JavaPlugin {
 	private final BlueTelePadsPlayerListener playerListener = new BlueTelePadsPlayerListener(this);
-	private final BlueTelePadsServerListener serverListener = new BlueTelePadsServerListener(this);
+	private BlueTelePadsServerListener serverListener;
 
 	public static Logger log;
 	public static PermissionHandler Permissions;
@@ -32,11 +43,9 @@ public class BlueTelePads extends JavaPlugin {
 	public boolean DISABLE_TELEPORT_MESSAGE = false;
 	public int TELEPAD_CENTER_ID = 22;
 	public int TELEPAD_SURROUNDING_ID = 43;
-	public long TELEPORT_COST = 0;
-
+	public double TELEPORT_COST = 0;
 
 	public void onEnable(){
-		System.out.println("[BlueTelePads] [Debug] Enabling...");
 		log = Logger.getLogger("Minecraft");
 		Configuration config = this.getConfiguration();
 		pm = getServer().getPluginManager();
@@ -53,6 +62,7 @@ public class BlueTelePads extends JavaPlugin {
 			config.setProperty("disable_teleport_message", DISABLE_TELEPORT_MESSAGE);
 			config.setProperty("telepad_center",TELEPAD_CENTER_ID);
 			config.setProperty("telepad_surrounding",TELEPAD_SURROUNDING_ID);
+			config.setProperty("teleport_cost",TELEPORT_COST);
 
 			config.save();
 		}
@@ -64,9 +74,10 @@ public class BlueTelePads extends JavaPlugin {
 		DISABLE_TELEPORT_MESSAGE = config.getBoolean("disable_teleport_message",DISABLE_TELEPORT_MESSAGE);
 		TELEPAD_CENTER_ID = config.getInt("telepad_center",TELEPAD_CENTER_ID);
 		TELEPAD_SURROUNDING_ID = config.getInt("telepad_surrounding",TELEPAD_SURROUNDING_ID);
+		TELEPORT_COST = config.getDouble("teleport_cost", TELEPORT_COST);
 
 		if(USE_PERMISSIONS){
-			Plugin perm = this.getServer().getPluginManager().getPlugin("Permissions");
+			Plugin perm = pm.getPlugin("Permissions");
 			if(perm != null){
 				log.info("[BlueTelePads] Permissions integration enabled");
 				Permissions = ((Permissions) perm).getHandler();
@@ -74,6 +85,8 @@ public class BlueTelePads extends JavaPlugin {
 				log.info("[BlueTelePads] Permissions integration could not be enabled!");
 			}
 		}
+
+		if (!loadRegister()) return;
 
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
@@ -88,5 +101,35 @@ public class BlueTelePads extends JavaPlugin {
 		pdfFile = null;
 		Method = null;
 		pm = null;
+	}
+
+	//returns: true, loaded; false, not loaded OR new
+	private boolean loadRegister() {
+		try {
+			Class.forName("com.nijikokun.register.payment.Methods");
+			serverListener = new BlueTelePadsServerListener(this);
+			return true;
+		} catch (ClassNotFoundException e) {
+			try {
+				BlueTelePads.log.info("[BlueTelePads] Register library not found! Downloading...");
+				if (!new File("lib").isDirectory())
+					if (!new File("lib").mkdir())
+						BlueTelePads.log.severe("[BlueTelePads] Error creating lib directory. Please make sure Craftbukkit has permissions to write to the Minecraft directory and there is no file named \"lib\" in that location.");
+				URL Register = new URL("https://github.com/iConomy/Register/raw/master/dist/Register.jar");
+				ReadableByteChannel rbc = Channels.newChannel(Register.openStream());
+				FileOutputStream fos = new FileOutputStream("lib/Register.jar");
+				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+				BlueTelePads.log.info("[BlueTelePads] Register library downloaded. Server reboot required to load.");
+			} catch (MalformedURLException ex) {
+				BlueTelePads.log.warning("[BlueTelePads] Error accessing Register lib URL: " + ex);
+			} catch (FileNotFoundException ex) {
+				BlueTelePads.log.warning("[BlueTelePads] Error accessing Register lib URL: " + ex);
+			} catch (IOException ex) {
+				BlueTelePads.log.warning("[BlueTelePads] Error downloading Register lib: " + ex);
+			} finally {
+				pm.disablePlugin(this);
+			}
+			return false;
+		}
 	}
 }
