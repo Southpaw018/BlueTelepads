@@ -18,13 +18,13 @@ To use BlueTelepads, build two telepads. For both pads, you'll need:
 Once you have your materials together, build your two telepads:
   - Place the center block.
   - Place double slabs to the north, south, east, and west of the center block.
-  - Place a sign underneath the center block. Make the third line of the sign the telepad's location name, if you want.
-      For example, if you have a telepad on the roof of your house, and you set the third line to "My Roof," when you teleport there,
+  - Place a sign underneath the center block. Make the fourth line of the sign the telepad's location name, if you want.
+      For example, if you have a telepad on the roof of your house, and you set the fourth line to "My Roof," when you teleport there,
       BlueTelepads will tell you "Sending you to My Roof."
   - Place a stone pressure plate on top of the center block.
 After you've built your telepads, tap (left click) the pressure plate of both telepads with redstone.
 
-That's it! 
+Then, start teleporting! 
 
 =============
  Features
@@ -45,6 +45,7 @@ Players and groups with permissions can create asymmetric free telepads (free to
 bluetelepads.use: Allow the player/group to use telepads
 bluetelepads.create: Allow the player/group to create new telepads that charge for use (if economy installed)
 bluetelepads.createfree: Allow the player/group to create new telepads that are free to use (if economy installed)
+bluetelepads.destroy: Allow the player/group to destroy telepad signs
 
 =============
  Commands
@@ -69,11 +70,17 @@ Many thanks to both of them for their hard work on this plugin.
 =============
 [Version 1.0]
   - Initial public release
+  - Added Register/Economy integration and free and pay teleport pads
+  - Fixed bug where players could spawn multiple messages on a telepad
+  - Major code cleanup
+  - Exposed warmup and cooldown times as config options instead of hardcoding them
+  - Added option to teleport players to slab across from sign instead of atop the pressure plate
+  - Prevent signs from being broken      
 ============
  Specops343
 ============
 [Version 0.5.3]
-  - Update for CB1000
+  - Updates
 ============
   ne0nx3r0
 ============

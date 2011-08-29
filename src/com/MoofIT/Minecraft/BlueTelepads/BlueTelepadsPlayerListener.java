@@ -3,6 +3,8 @@ package com.MoofIT.Minecraft.BlueTelepads;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.HashMap;
+import java.util.HashSet;
+
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.block.Block;
@@ -17,6 +19,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	private final BlueTelepads plugin;
 	private static HashMap<String, Location> lapisLinks  = new HashMap<String, Location>();
 	private static HashMap<String, Long> teleportTimeouts = new HashMap<String, Long>();
+	private static HashSet<Player> teleportingPlayers = new HashSet<Player>();
 
 	public BlueTelepadsPlayerListener(BlueTelepads instance) {
 		this.plugin = instance;
@@ -45,7 +48,12 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	}
 
 	public boolean isTelepadFree(Block lapisBlock) {
-		if (isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree) return true;
+		Sign sign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
+		if (isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree && sign.getLine(0).split(":")[1] == "F") return true;
+		return false; 
+	}
+	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
+		if (creatingLink && isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree) return true;
 		return false; 
 	}
 
@@ -89,6 +97,9 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		Sign slapis1 = (Sign)lapis1.getRelative(BlockFace.DOWN).getState();
 		Sign slapis2 = (Sign)lapis2.getRelative(BlockFace.DOWN).getState();
 
+		slapis1.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis1) ? "F" : "P"));
+		slapis2.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis2) ? "F" : "P"));
+
 		slapis1.setLine(1,slapis2.getWorld().getName());
 		slapis2.setLine(1,slapis1.getWorld().getName());
 
@@ -123,7 +134,8 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		if (event.getAction() == Action.PHYSICAL
 		&& event.getClickedBlock() != null
 		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))
-		&& (!teleportTimeouts.containsKey(player.getName()) || teleportTimeouts.get(player.getName()) < System.currentTimeMillis())) {
+		&& (!teleportTimeouts.containsKey(player.getName()) || teleportTimeouts.get(player.getName()) < System.currentTimeMillis())
+		&& !teleportingPlayers.contains(player)) {
 			Block senderLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 			Block receiverLapis = getTelepadLapisReceiver(senderLapis);
 
@@ -169,6 +181,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 					}
 					msgPlayer(player,message);
 				}
+				teleportingPlayers.add(player);
 				if (plugin.disableTeleportWait) {
 					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,player.getLocation(),senderLapis,receiverLapis,isFree,plugin.disableTeleportWait));
 				} else {
@@ -188,7 +201,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				msgPlayer(player,"You do not have permission to create a telepad!");
 				return;
 			}
-			if (!player.hasPermission("bluetelepads.createfree")) {
+			if (isTelepadFree(event.getClickedBlock(),true) && !player.hasPermission("bluetelepads.createfree")) {
 				msgPlayer(player,"You do not have permission to create a free telepad.");
 				return;
 			}
@@ -221,7 +234,6 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 						if (!TelepadsWithinDistance(firstLapis,secondLapis)) {
 							msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + getDistance(firstLapis.getLocation(),event.getClickedBlock().getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
-
 							return;
 						}
 
@@ -280,6 +292,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		}
 
 		public void run() {
+			teleportingPlayers.remove(player);
 			if (getDistance(playerLocation,player.getLocation()) > 1) {
 				msgPlayer(player,"You moved, cancelling teleport!");
 				return;
@@ -319,7 +332,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			}
 
 			//TODO did making this private class non-static break it?
-			if (!isFree && plugin.Method != null) {
+			if (!isFree && plugin.Method != null && plugin.teleportCost > 0) {
 				plugin.Method.getAccount(player.getName()).subtract(plugin.teleportCost);
 				msgPlayer(player,"You have been charged " + plugin.teleportCost + ".");
 			}

@@ -26,6 +26,7 @@ import com.nijikokun.register.payment.Method;
  */
 public class BlueTelepads extends JavaPlugin {
 	private final BlueTelepadsPlayerListener playerListener = new BlueTelepadsPlayerListener(this);
+	private final BlueTelepadsBlockListener blockListener = new BlueTelepadsBlockListener(this);
 	private BlueTelepadsServerListener serverListener;
 
 	public static Logger log;
@@ -66,6 +67,7 @@ public class BlueTelepads extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
+		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.High, this);
 
 		log.info(pdfFile.getName() + " v." + pdfFile.getVersion() + " is enabled.");
 	}

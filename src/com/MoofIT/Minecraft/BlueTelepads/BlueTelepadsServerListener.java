@@ -11,8 +11,8 @@ public class BlueTelepadsServerListener extends ServerListener {
 	private BlueTelepads plugin;
 	private Methods Methods;
 
-	public BlueTelepadsServerListener(BlueTelepads plugin) {
-		this.plugin = plugin;
+	public BlueTelepadsServerListener(BlueTelepads instance) {
+		this.plugin = instance;
 		Methods = new Methods();
 	}
 
