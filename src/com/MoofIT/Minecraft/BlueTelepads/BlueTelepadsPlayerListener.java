@@ -30,6 +30,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	}
 
 	public boolean isTelepadLapis(Block lapisBlock) {
+		if (!isTelepadLapis(lapisBlock, false)) return false;
+		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
+		return true;
+	}
+	public boolean isTelepadLapis(Block lapisBlock, boolean resetting) {
 		if (lapisBlock.getTypeId() != plugin.telepadCenterID) return false;
 
 		//get the data val of the slab to the north to check that all slabs are the same
@@ -42,21 +47,21 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		}
 
 		if (lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.SIGN_POST && lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.WALL_SIGN) return false;
-		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
 
 		return true;
 	}
 
 	public boolean isTelepadFree(Block lapisBlock) {
 		Sign sign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
-		if (isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree && sign.getLine(0).split(":")[1] == "F") return true;
+		String[] line0 = sign.getLine(0).split(":");
+		if (line0.length != 2 || !line0[1].equals("F")) return false;
+		if (isTelepadFree(lapisBlock,false)) return true;
 		return false; 
 	}
 	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
-		if (creatingLink && isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree) return true;
+		if (isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree) return true;
 		return false; 
 	}
-
 
 	private String toHex(int number) {
 		return Integer.toHexString(number + 32000);
@@ -97,8 +102,8 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		Sign slapis1 = (Sign)lapis1.getRelative(BlockFace.DOWN).getState();
 		Sign slapis2 = (Sign)lapis2.getRelative(BlockFace.DOWN).getState();
 
-		slapis1.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis1) ? "F" : "P"));
-		slapis2.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis2) ? "F" : "P"));
+		slapis1.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis1,true) ? "F" : "P"));
+		slapis2.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis2,true) ? "F" : "P"));
 
 		slapis1.setLine(1,slapis2.getWorld().getName());
 		slapis2.setLine(1,slapis1.getWorld().getName());
@@ -258,11 +263,10 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		&& event.getClickedBlock() != null
 		&& event.getClickedBlock().getTypeId() == plugin.telepadCenterID) {
 			Block resetLapis = event.getClickedBlock();
-			if (resetLapis.getType() == Material.AIR
-			&& (isTelepadLapis(resetLapis))) {//*phew*
-				//We checked that it's a sign above
+			if (isTelepadLapis(resetLapis, true)) {
 				Sign resetSign = (Sign)resetLapis.getRelative(BlockFace.DOWN).getState();
 
+				resetSign.setLine(0,"");
 				resetSign.setLine(1,"");
 				resetSign.setLine(2,"");
 				resetSign.update();

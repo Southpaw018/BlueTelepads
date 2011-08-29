@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
 
@@ -18,23 +17,20 @@ public class BlueTelepadsBlockListener extends BlockListener {
 	@Override
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		Player player = event.getPlayer();
 
 		if (block.getType() != Material.WALL_SIGN) return;
 
 		Sign sign = (Sign)block.getState();
-		if (!sign.getLine(0).split(":")[0].equals("BlueTelepads") || sign.getLine(1) != sign.getBlock().getWorld().getName()) return;
-		if (!player.hasPermission("bluetelepads.destroy")) {
+		String[] line0 = sign.getLine(0).split(":");
+
+		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || !sign.getLine(1).equals(sign.getBlock().getWorld().getName())) return;
+		if (!event.getPlayer().hasPermission("bluetelepads.destroy")) {
 			event.setCancelled(true);
 			sign.update();
 			return;
 		}
 	}
 
-	public boolean isBlueTelepadsSign(Sign sign) {
-		
-		return false;		
-	}
 	//ugh. make this static? add utlity class or telepad class? hack for now - duplicated function from playerlistener
 	public boolean isTelepadLapis(Block lapisBlock) {
 		if (lapisBlock.getTypeId() != plugin.telepadCenterID) return false;
