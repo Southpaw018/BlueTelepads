@@ -319,16 +319,16 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				byte signData = sign.getData();
 
 				if (signData == 0x2) {//East
-					sendTo.setYaw(180);
+					sendTo.setYaw(0);
 					if (plugin.useSlabAsDestination) sendTo.setZ(sendTo.getZ() + 1);
 				} else if (signData == 0x3) {//West
-					sendTo.setYaw(0);
+					sendTo.setYaw(180);
 					if (plugin.useSlabAsDestination) sendTo.setZ(sendTo.getZ() - 1);
 				} else if (signData == 0x4) {//North
-					sendTo.setYaw(270);
+					sendTo.setYaw(90);
 					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() - 1);
 				} else {//South
-					sendTo.setYaw(90);
+					sendTo.setYaw(270);
 					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() + 1);
 				}
 			} else {
