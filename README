@@ -74,6 +74,7 @@ Many thanks to both of them for their hard work on this plugin.
   - Fixed a bug with calculating the slab destination option
   - Added missing destroy permission in plugin.yml
   - Move config loading so that only one server reboot is required on initial install
+  - Fix for useSlabAsDestination only working with WALL_SIGN and not SIGN_POST 
 [Version 1.0b1]
   - Initial public release
   - Added Register/Economy integration and free and pay teleport pads
