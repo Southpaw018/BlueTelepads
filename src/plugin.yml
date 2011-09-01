@@ -15,3 +15,6 @@ permissions:
   bluetelepads.createfree:
     description: Allow the player/group to create new telepads that are free to use (if economy installed)
     default: op
+  bluetelepads.destroy:
+    description: Allow the player/group to destroy telepad signs
+    default: op

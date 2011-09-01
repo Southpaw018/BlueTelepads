@@ -314,7 +314,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			Block sign = receiver.getRelative(BlockFace.DOWN);
 
 			if (sign.getType() == Material.SIGN_POST) {
-				sendTo.setYaw(sign.getData()*22.5f);
+				sendTo.setYaw(sign.getData() < 0x8 ? sign.getData()*22.5f + 180 : sign.getData()*22.5f - 180);
 			} else if (sign.getType() == Material.WALL_SIGN) {
 				byte signData = sign.getData();
 
@@ -325,17 +325,16 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 					sendTo.setYaw(180);
 					if (plugin.useSlabAsDestination) sendTo.setZ(sendTo.getZ() - 1);
 				} else if (signData == 0x4) {//North
-					sendTo.setYaw(90);
+					sendTo.setYaw(270);
 					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() - 1);
 				} else {//South
-					sendTo.setYaw(270);
+					sendTo.setYaw(90);
 					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() + 1);
 				}
 			} else {
 				sendTo.setYaw(player.getLocation().getYaw());
 			}
 
-			//TODO did making this private class non-static break it?
 			if (!isFree && plugin.Method != null && plugin.teleportCost > 0) {
 				plugin.Method.getAccount(player.getName()).subtract(plugin.teleportCost);
 				msgPlayer(player,"You have been charged " + plugin.teleportCost + ".");

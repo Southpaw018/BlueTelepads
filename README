@@ -68,7 +68,9 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
-[Version 1.0]
+[Version 1.0b2]
+  - Players were facing 180° the wrong direction after teleporting
+[Version 1.0b1]
   - Initial public release
   - Added Register/Economy integration and free and pay teleport pads
   - Fixed bug where players could spawn multiple messages on a telepad
@@ -80,7 +82,7 @@ Many thanks to both of them for their hard work on this plugin.
  Specops343
 ============
 [Version 0.5.3]
-  - Updates
+  - Plugin keep alive
 ============
   ne0nx3r0
 ============
