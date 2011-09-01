@@ -118,15 +118,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		slapis2.update(true);
 	}
 
-	private static double getDistance(Location loc1,Location loc2) {
-		return loc1.distance(loc2); //TODO modify
-	}
-
 	private boolean TelepadsWithinDistance(Block block1,Block block2) {
 		if (plugin.maxDistance == 0) {
 			return true;
 		}
-		if (getDistance(block1.getLocation(),block2.getLocation()) < plugin.maxDistance) {
+		if (block1.getLocation().distance(block2.getLocation()) < plugin.maxDistance) {
 			return true;
 		}
 		return false;
@@ -154,7 +150,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 				//Verify distance
 				if (!TelepadsWithinDistance(senderLapis,receiverLapis)) {
-					msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + getDistance(senderLapis.getLocation(),receiverLapis.getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
+					msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + senderLapis.getLocation().distance(receiverLapis.getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
 					return;
 				}
 				boolean isFree = isTelepadFree(senderLapis);
@@ -236,7 +232,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 						Block secondLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
 						if (!TelepadsWithinDistance(firstLapis,secondLapis)) {
-							msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + getDistance(firstLapis.getLocation(),event.getClickedBlock().getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
+							msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + firstLapis.getLocation().distance(event.getClickedBlock().getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
 							return;
 						}
 
@@ -297,11 +293,6 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			senderPadCenter.setX(senderPadCenter.getBlockX() + 0.5);
 			senderPadCenter.setZ(senderPadCenter.getBlockZ() + 0.5);
 
-			//REF debug messages!
-			BlueTelepads.log.info("[BlueTelepads] [Debug] senderPadCenter: " + senderPadCenter.getX() + "," + senderPadCenter.getY() + "," + senderPadCenter.getZ());
-			BlueTelepads.log.info("[BlueTelepads] [Debug] playerLocation: " + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ());
-			BlueTelepads.log.info("[BlueTelepads] [Debug] distance: " + senderPadCenter.distance(player.getLocation()));
-			
 			if (senderPadCenter.distance(player.getLocation()) > 1.1 || senderPadCenter.getBlockY() != player.getLocation().getBlockY()) {
 				msgPlayer(player,"You're not on the center of the pad! Cancelling teleport.");
 				return;
