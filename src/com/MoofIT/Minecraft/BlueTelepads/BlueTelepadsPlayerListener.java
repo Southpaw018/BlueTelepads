@@ -312,7 +312,20 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			byte signData = sign.getData();
 			if (sign.getType() == Material.SIGN_POST) {
 				sendTo.setYaw(signData < 0x8 ? signData*22.5f + 180 : signData*22.5f - 180);
-				//TODO slab destination here
+				if (plugin.useSlabAsDestination) {
+					if (signData < 0x3 || signData == 0xF) {//west
+						sendTo.setZ(sendTo.getZ() - 1);
+					}
+					else if (signData < 0x7) {//north
+						sendTo.setX(sendTo.getX() - 1);
+					}
+					else if (signData < 0xB) {//east
+						sendTo.setZ(sendTo.getZ() + 1);						
+					}
+					else if (signData < 0xF) {//south
+						sendTo.setX(sendTo.getX() + 1);						
+					}
+				}
 			} else if (sign.getType() == Material.WALL_SIGN) {
 				if (signData == 0x2) {//East
 					sendTo.setYaw(0);
