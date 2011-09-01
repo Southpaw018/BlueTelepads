@@ -45,7 +45,7 @@ Players and groups with permissions can create asymmetric free telepads (free to
 bluetelepads.use: Allow the player/group to use telepads
 bluetelepads.create: Allow the player/group to create new telepads that charge for use (if economy installed)
 bluetelepads.createfree: Allow the player/group to create new telepads that are free to use (if economy installed)
-bluetelepads.destroy: Allow the player/group to destroy telepad signs
+bluetelepads.destroy: Allow the player/group to destroy active, non-reset telepad signs
 
 =============
  Commands
@@ -69,7 +69,10 @@ Many thanks to both of them for their hard work on this plugin.
  Changes
 =============
 [Version 1.0b2]
-  - Players were facing 180° the wrong direction after teleporting
+  - Players were facing 180 degrees the wrong direction after teleporting
+  - Fixed a bug where a lagging player could move slightly after stepping on the telepad, then hold still to teleport
+  - Fixed a bug with calculating the slab destination option
+  - Added missing destroy permission in plugin.yml
 [Version 1.0b1]
   - Initial public release
   - Added Register/Economy integration and free and pay teleport pads

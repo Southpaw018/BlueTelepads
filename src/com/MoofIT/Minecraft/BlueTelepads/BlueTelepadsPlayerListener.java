@@ -118,8 +118,8 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		slapis2.update(true);
 	}
 
-	private static int getDistance(Location loc1,Location loc2) {
-		return (int)Math.sqrt(Math.pow(loc2.getBlockX() - loc1.getBlockX(),2) + Math.pow(loc2.getBlockY() - loc1.getBlockY(),2) + Math.pow(loc2.getBlockZ() - loc1.getBlockZ(),2));
+	private static double getDistance(Location loc1,Location loc2) {
+		return loc1.distance(loc2); //TODO modify
 	}
 
 	private boolean TelepadsWithinDistance(Block block1,Block block2) {
@@ -170,11 +170,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 					if (!plugin.disableTeleportWait) {
 						if (receiverSign.getLine(3).equals("")) {
-							message = "Preparing to send you, stand still!";
+							message = "Preparing to send you! Stand in the center of the pad.";
 						} else {
 							message = "Preparing to send you to "
 								 + ChatColor.YELLOW + receiverSign.getLine(3)
-								 + ChatColor.AQUA + ", stand still!";
+								 + ChatColor.AQUA + "! Stand in the center of the pad.";
 						}
 					} else {
 						if (receiverSign.getLine(3).equals("")) {
@@ -188,12 +188,10 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				}
 				teleportingPlayers.add(player);
 				if (plugin.disableTeleportWait) {
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,player.getLocation(),senderLapis,receiverLapis,isFree,plugin.disableTeleportWait));
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,senderLapis,receiverLapis,isFree,plugin.disableTeleportWait));
 				} else {
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,player.getLocation(),senderLapis,receiverLapis,isFree,plugin.disableTeleportWait),plugin.sendWait * 20L);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,senderLapis,receiverLapis,isFree,plugin.disableTeleportWait),plugin.sendWait * 20L);
 			   }
-
-
 			}
 		}
 		//Creating a telepad link
@@ -280,15 +278,13 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 	private class BluePadTeleport implements Runnable {
 		private final Player player;
-		private final Location playerLocation;
 		private final Block sender;
 		private final Block receiver;
 		private boolean isFree;
 		private final boolean disableTeleportWait;
 
-		BluePadTeleport(Player player,Location playerLocation,Block senderLapis,Block receiverLapis,boolean isFree,boolean disableTeleportWait) {
+		BluePadTeleport(Player player,Block senderLapis,Block receiverLapis,boolean isFree,boolean disableTeleportWait) {
 			this.player = player;
-			this.playerLocation = playerLocation;
 			this.sender = senderLapis;
 			this.receiver = receiverLapis;
 			this.isFree = isFree;
@@ -297,8 +293,15 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 		public void run() {
 			teleportingPlayers.remove(player);
-			if (getDistance(playerLocation,player.getLocation()) > 1) {
-				msgPlayer(player,"You moved, cancelling teleport!");
+			Location senderPadCenter = sender.getRelative(BlockFace.UP).getLocation();
+			senderPadCenter.setX(senderPadCenter.getBlockX() + 0.5);
+			senderPadCenter.setZ(senderPadCenter.getBlockZ() + 0.5);
+			BlueTelepads.log.info("[BlueTelepads] [Debug] senderPadCenter: " + senderPadCenter.getX() + "," + senderPadCenter.getY() + "," + senderPadCenter.getZ());
+			BlueTelepads.log.info("[BlueTelepads] [Debug] playerLocation: " + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ());
+			BlueTelepads.log.info("[BlueTelepads] [Debug] distance: " + getDistance(senderPadCenter,player.getLocation()));
+			
+			if (getDistance(senderPadCenter,player.getLocation()) > 1.45) {
+				msgPlayer(player,"You're not in the center of the pad! Cancelling teleport.");
 				return;
 			}
 			if (!this.disableTeleportWait) {
@@ -313,11 +316,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 			Block sign = receiver.getRelative(BlockFace.DOWN);
 
+			byte signData = sign.getData();
 			if (sign.getType() == Material.SIGN_POST) {
-				sendTo.setYaw(sign.getData() < 0x8 ? sign.getData()*22.5f + 180 : sign.getData()*22.5f - 180);
+				sendTo.setYaw(signData < 0x8 ? signData*22.5f + 180 : signData*22.5f - 180);
+				//TODO slab destination here
 			} else if (sign.getType() == Material.WALL_SIGN) {
-				byte signData = sign.getData();
-
 				if (signData == 0x2) {//East
 					sendTo.setYaw(0);
 					if (plugin.useSlabAsDestination) sendTo.setZ(sendTo.getZ() + 1);
@@ -326,10 +329,10 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 					if (plugin.useSlabAsDestination) sendTo.setZ(sendTo.getZ() - 1);
 				} else if (signData == 0x4) {//North
 					sendTo.setYaw(270);
-					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() - 1);
+					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getX() - 1);
 				} else {//South
 					sendTo.setYaw(90);
-					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getZ() + 1);
+					if (plugin.useSlabAsDestination) sendTo.setX(sendTo.getX() + 1);
 				}
 			} else {
 				sendTo.setYaw(player.getLocation().getYaw());

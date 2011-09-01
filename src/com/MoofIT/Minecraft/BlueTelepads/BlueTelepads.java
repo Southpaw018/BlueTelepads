@@ -60,8 +60,8 @@ public class BlueTelepads extends JavaPlugin {
 		pm = getServer().getPluginManager();
 		pdfFile = getDescription();
 
-		if (!loadRegister()) return;
 		loadConfig();
+		if (!loadRegister()) return;
 		if (versionCheck) versionCheck();
 
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
