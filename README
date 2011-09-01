@@ -73,6 +73,7 @@ Many thanks to both of them for their hard work on this plugin.
   - Fixed a bug where a lagging player could move slightly after stepping on the telepad, then hold still to teleport
   - Fixed a bug with calculating the slab destination option
   - Added missing destroy permission in plugin.yml
+  - Move config loading so that only one server reboot is required on initial install
 [Version 1.0b1]
   - Initial public release
   - Added Register/Economy integration and free and pay teleport pads

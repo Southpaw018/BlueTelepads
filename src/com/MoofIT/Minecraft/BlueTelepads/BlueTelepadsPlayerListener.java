@@ -170,11 +170,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 					if (!plugin.disableTeleportWait) {
 						if (receiverSign.getLine(3).equals("")) {
-							message = "Preparing to send you! Stand in the center of the pad.";
+							message = "Preparing to send you! Stand on the center of the pad.";
 						} else {
 							message = "Preparing to send you to "
 								 + ChatColor.YELLOW + receiverSign.getLine(3)
-								 + ChatColor.AQUA + "! Stand in the center of the pad.";
+								 + ChatColor.AQUA + "! Stand on the center of the pad.";
 						}
 					} else {
 						if (receiverSign.getLine(3).equals("")) {
@@ -296,12 +296,14 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			Location senderPadCenter = sender.getRelative(BlockFace.UP).getLocation();
 			senderPadCenter.setX(senderPadCenter.getBlockX() + 0.5);
 			senderPadCenter.setZ(senderPadCenter.getBlockZ() + 0.5);
+
+			//REF debug messages!
 			BlueTelepads.log.info("[BlueTelepads] [Debug] senderPadCenter: " + senderPadCenter.getX() + "," + senderPadCenter.getY() + "," + senderPadCenter.getZ());
 			BlueTelepads.log.info("[BlueTelepads] [Debug] playerLocation: " + player.getLocation().getX() + "," + player.getLocation().getY() + "," + player.getLocation().getZ());
-			BlueTelepads.log.info("[BlueTelepads] [Debug] distance: " + getDistance(senderPadCenter,player.getLocation()));
+			BlueTelepads.log.info("[BlueTelepads] [Debug] distance: " + senderPadCenter.distance(player.getLocation()));
 			
-			if (getDistance(senderPadCenter,player.getLocation()) > 1.45) {
-				msgPlayer(player,"You're not in the center of the pad! Cancelling teleport.");
+			if (senderPadCenter.distance(player.getLocation()) > 1.1 || senderPadCenter.getBlockY() != player.getLocation().getBlockY()) {
+				msgPlayer(player,"You're not on the center of the pad! Cancelling teleport.");
 				return;
 			}
 			if (!this.disableTeleportWait) {

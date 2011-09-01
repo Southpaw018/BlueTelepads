@@ -31,7 +31,7 @@ public class BlueTelepadsBlockListener extends BlockListener {
 		}
 	}
 
-	//ugh. make this static? add utlity class or telepad class? hack for now - duplicated function from playerlistener
+	//TODO ugh. make this static? add utlity class or telepad class? hack for now - duplicated function from playerlistener
 	public boolean isTelepadLapis(Block lapisBlock) {
 		if (lapisBlock.getTypeId() != plugin.telepadCenterID) return false;
 
