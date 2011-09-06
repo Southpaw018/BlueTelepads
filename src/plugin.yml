@@ -1,23 +1,23 @@
 name: BlueTelepads
 main: com.MoofIT.Minecraft.BlueTelepads.BlueTelepads
-version: 1.0b2
+version: 1.0
 description: Seamless, commandless, admin or player controlled multiworld teleport for Minecraft
 author: Southpaw018
 website: http://www.moofit.com
 
 permissions:
   bluetelepads.use:
-    description: Allow the player/group to use telepads
+    description: Allows the use of telepads
     default: true
   bluetelepads.create:
-    description: Allow the player/group to create new telepads that charge for use (if economy installed)
+    description: Allows the creation of pay-to-use telepads
     default: op
   bluetelepads.createfree:
-    description: Allow the player/group to create new telepads that are free to use (if economy installed)
+    description: Allows the creation of free telepads
     default: op
   bluetelepads.destroy:
-    description: Allow the player/group to destroy telepad signs
+    description: Allows destruction of signs for active (linked and not reset) pads
     default: op
   bluetelepads.alwaysfree:
-    description: This player/group always teleports for free on all pads
+    description: Grants free teleports on all pads
     default: false
