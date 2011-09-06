@@ -18,3 +18,6 @@ permissions:
   bluetelepads.destroy:
     description: Allow the player/group to destroy telepad signs
     default: op
+  bluetelepads.alwaysfree:
+    description: This player/group always teleports for free on all pads
+    default: false

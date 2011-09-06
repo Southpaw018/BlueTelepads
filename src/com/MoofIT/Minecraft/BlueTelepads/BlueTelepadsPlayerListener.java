@@ -153,7 +153,9 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 					msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + senderLapis.getLocation().distance(receiverLapis.getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
 					return;
 				}
-				boolean isFree = isTelepadFree(senderLapis);
+				boolean isFree;
+				if (player.hasPermission("bluetelepads.alwaysfree")) isFree = true;
+				else isFree = isTelepadFree(senderLapis);
 				if (!isFree && !plugin.Method.getAccount(player.getName()).hasEnough(plugin.teleportCost)) {
 					msgPlayer(player,ChatColor.RED + "You don't have enough to pay for a teleport.");
 					return;
