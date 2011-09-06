@@ -43,7 +43,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH};
 		for (BlockFace check : surroundingChecks) {
-			if ((lapisBlock.getRelative(check).getTypeId() != 43 || (plugin.allowSingleSlabs == true && lapisBlock.getRelative(check).getTypeId() != 42)) && lapisBlock.getRelative(check).getData() != slabType) return false;
+			if ((lapisBlock.getRelative(check).getTypeId() != 43 || (plugin.allowSingleSlabs == true && lapisBlock.getRelative(check).getTypeId() != 44)) && lapisBlock.getRelative(check).getData() != slabType) return false;
 		}
 
 		if (lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.SIGN_POST && lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.WALL_SIGN) return false;
