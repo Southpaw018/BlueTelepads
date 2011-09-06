@@ -8,6 +8,9 @@ Core:
     #Put the player on the slab across from the sign instead of on the pressure plate
     useSlabAsDestination: false
 
+    #Allow both single and double slabs to be used, else only allow double slabs
+    allowSingleSlabs: false
+
     #Check for new versions on startup
     versionCheck: true
 Time:

@@ -41,6 +41,7 @@ public class BlueTelepads extends JavaPlugin {
 	public boolean disableTeleportMessage = false;
 	public int telepadCenterID = 22;
 	public boolean useSlabAsDestination = false;
+	public boolean allowSingleSlabs = false;
 	public boolean versionCheck = true;
 
 	public boolean disableTeleportWait = false;
@@ -111,6 +112,7 @@ public class BlueTelepads extends JavaPlugin {
 		disableTeleportMessage = config.getBoolean("Core.disableTeleportMessage",disableTeleportMessage);
 		telepadCenterID = config.getInt("Core.telepadCenterID",telepadCenterID);
 		useSlabAsDestination = config.getBoolean("Core.useSlabAsDestination", useSlabAsDestination);
+		allowSingleSlabs = config.getBoolean("Core.allowSingleSlabs", allowSingleSlabs);
 		versionCheck = config.getBoolean("Core.versionCheck", versionCheck);
 
 		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
