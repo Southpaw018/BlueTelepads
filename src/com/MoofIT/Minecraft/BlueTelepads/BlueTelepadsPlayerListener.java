@@ -37,13 +37,16 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	public boolean isTelepadLapis(Block lapisBlock, boolean resetting) {
 		if (lapisBlock.getTypeId() != plugin.telepadCenterID) return false;
 
-		//get the data val of the slab to the north to check that all slabs are the same
+		//get the setup of the slab to the north to check that all slabs are the same
 		short slabType = lapisBlock.getRelative(BlockFace.NORTH).getData();
+		int slabID = lapisBlock.getRelative(BlockFace.NORTH).getTypeId();
+
+		if (slabID != 43 && (plugin.allowSingleSlabs == true && slabID != 44)) return false;
 		if (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree) return false;
 
-		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH};
+		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH};
 		for (BlockFace check : surroundingChecks) {
-			if ((lapisBlock.getRelative(check).getTypeId() != 43 || (plugin.allowSingleSlabs == true && lapisBlock.getRelative(check).getTypeId() != 44)) && lapisBlock.getRelative(check).getData() != slabType) return false;
+			if ((lapisBlock.getRelative(check).getTypeId() != slabID) || lapisBlock.getRelative(check).getData() != slabType) return false;
 		}
 
 		if (lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.SIGN_POST && lapisBlock.getRelative(BlockFace.DOWN).getType() != Material.WALL_SIGN) return false;
