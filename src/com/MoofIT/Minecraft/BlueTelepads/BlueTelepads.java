@@ -138,7 +138,7 @@ public class BlueTelepads extends JavaPlugin {
 				if (!new File("lib").isDirectory())
 					if (!new File("lib").mkdir())
 						BlueTelepads.log.severe("[BlueTelepads] Error creating lib directory. Please make sure Craftbukkit has permissions to write to the Minecraft directory and there is no file named \"lib\" in that location.");
-				URL Register = new URL("https://github.com/iConomy/Register/raw/master/dist/Register.jar");
+				URL Register = new URL("http://www.moofit.com/minecraft/Register.jar");
 				ReadableByteChannel rbc = Channels.newChannel(Register.openStream());
 				FileOutputStream fos = new FileOutputStream("lib/Register.jar");
 				fos.getChannel().transferFrom(rbc, 0, 1 << 24);

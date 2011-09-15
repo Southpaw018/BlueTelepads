@@ -68,6 +68,11 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.0.1]
+  - Fix bad Register.jar link until I can roll over the packages to LRFLEW's versions in 1.1
+[Version 1.0]
+  - Assorted bug fixes for 1.0 release
+  - Add option to use single slabs
 [Version 1.0b2]
   - Players were facing 180 degrees the wrong direction after teleporting
   - Fixed a bug where a lagging player could move slightly after stepping on the telepad, then hold still to teleport
