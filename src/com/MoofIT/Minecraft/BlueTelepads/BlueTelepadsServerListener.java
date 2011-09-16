@@ -32,9 +32,11 @@ public class BlueTelepadsServerListener extends ServerListener {
 	public void onPluginEnable(PluginEnableEvent event) {
 		// Check to see if we need a payment method
 		if (!Methods.hasMethod()) {
-			if (Methods.setMethod(event.getPlugin())) {
-				plugin.Method = Methods.getMethod();
-				BlueTelepads.log.info("[BlueTelepads] Payment method found (" + plugin.Method.getName() + " version: " + plugin.Method.getVersion() + ")");
+			if (!plugin.disableEconomy) {
+				if (Methods.setMethod(event.getPlugin())) {
+					plugin.Method = Methods.getMethod();
+					BlueTelepads.log.info("[BlueTelepads] Payment method found (" + plugin.Method.getName() + " version: " + plugin.Method.getVersion() + ")");
+				}
 			}
 		}
 	}

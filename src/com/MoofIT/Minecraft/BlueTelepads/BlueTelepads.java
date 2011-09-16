@@ -48,13 +48,14 @@ public class BlueTelepads extends JavaPlugin {
 	public int sendWait = 3;
 	public int telepadCooldown = 5;
 
+	public boolean disableEconomy = false;
 	public double teleportCost = 0;
 	public byte telepadSurroundingNormal = 0;
 	public byte telepadSurroundingFree = 1;
 
 	//Config versioning
 	private int configVer = 0;
-	private final int configCurrent = 1;
+	private final int configCurrent = 2;
 
 	public void onEnable() {
 		log = Logger.getLogger("Minecraft");
@@ -118,7 +119,8 @@ public class BlueTelepads extends JavaPlugin {
 		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
 		sendWait = config.getInt("Time.sendWait", sendWait);
 		telepadCooldown = config.getInt("Time.telepadCooldown", telepadCooldown);
-		
+
+		disableEconomy = config.getBoolean("Economy.disableEconomy", disableEconomy);
 		teleportCost = config.getDouble("Economy.teleportCost", teleportCost);
 		telepadSurroundingNormal = (byte)config.getInt("Economy.telepadSurroundingNormal", telepadSurroundingNormal);
 		telepadSurroundingFree = (byte)config.getInt("Economy.telepadSurroundingFree", telepadSurroundingFree);

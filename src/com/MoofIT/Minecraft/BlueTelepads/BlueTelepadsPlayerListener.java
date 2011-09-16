@@ -42,7 +42,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		int slabID = lapisBlock.getRelative(BlockFace.NORTH).getTypeId();
 
 		if (slabID != 43 && (plugin.allowSingleSlabs == true && slabID != 44)) return false;
-		if (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree) return false;
+		if (!plugin.disableEconomy || (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree)) return false;
 
 		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH};
 		for (BlockFace check : surroundingChecks) {
@@ -355,7 +355,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			}
 			player.teleport(sendTo);
 
-			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,1) * 1000);
+			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,3) * 1000);
 		}
 	}
 }

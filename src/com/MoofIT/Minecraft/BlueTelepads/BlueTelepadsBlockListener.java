@@ -37,7 +37,7 @@ public class BlueTelepadsBlockListener extends BlockListener {
 
 		//get the data val of the slab to the north to check that all slabs are the same
 		short slabType = lapisBlock.getRelative(BlockFace.NORTH).getData();
-		if (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree) return false;
+		if (!plugin.disableEconomy || (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree)) return false;
 
 		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH};
 		for (BlockFace check : surroundingChecks) {

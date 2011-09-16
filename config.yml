@@ -1,8 +1,9 @@
 Core:
+    #The maximum distance between two telepads, in blocks, measured in a straight line. 0 for infinite
     maxTelepadDistance: 0
     disableTeleportMessage: false
 
-    #Lapis block: 22; Gold block: 41; Diamond block: 57; Moss stone: 48
+    #Commonly used center block IDs: Lapis block: 22; Gold block: 41; Diamond block: 57; Moss stone: 48
     telepadCenterID: 22
 
     #Put the player on the slab across from the sign instead of on the pressure plate
@@ -19,13 +20,15 @@ Time:
     #If teleport wait is not disabled, this is the number of seconds the player must hold still before they are teleported
     sendWait: 3
 
-    #This is the number of seconds between when players may use telepads. Minimum 1 sec
+    #This is the number of seconds between when players may use telepads. Minimum 3 sec (less can cause issues)
     telepadCooldown: 5
 Economy:
+    #Disable economy even if one is detected. This allows use of all slab types.
+    disableEconomy: false
     teleportCost: 0
 
     #Stone: 0; Sandstone: 1; Wood: 2; Cobblestone: 3
     telepadSurroundingNormal: 0 
     telepadSurroundingFree: 1
 
-configVer: 1
+configVer: 2
