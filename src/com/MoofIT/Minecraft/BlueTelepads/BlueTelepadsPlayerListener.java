@@ -159,7 +159,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				boolean isFree;
 				if (player.hasPermission("bluetelepads.alwaysfree")) isFree = true;
 				else isFree = isTelepadFree(senderLapis);
-				if (!isFree && !plugin.Method.getAccount(player.getName()).hasEnough(plugin.teleportCost)) {
+				if (plugin.Method != null && !isFree && !plugin.Method.getAccount(player.getName()).hasEnough(plugin.teleportCost)) {
 					msgPlayer(player,ChatColor.RED + "You don't have enough to pay for a teleport.");
 					return;
 				}
@@ -349,7 +349,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				sendTo.setYaw(player.getLocation().getYaw());
 			}
 
-			if (!isFree && plugin.Method != null && plugin.teleportCost > 0) {
+			if (plugin.Method != null && !isFree && plugin.teleportCost > 0) {
 				plugin.Method.getAccount(player.getName()).subtract(plugin.teleportCost);
 				msgPlayer(player,"You have been charged " + plugin.teleportCost + ".");
 			}
