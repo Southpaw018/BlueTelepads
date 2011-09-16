@@ -68,6 +68,9 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.1]
+  - Add option to disable economy even if detected, allowing use of all slab types
+  - Fix a Null Pointer Exception on servers that do not have an economy installed
 [Version 1.0.1]
   - Fix bad Register.jar link until I can roll over the packages to LRFLEW's versions in 1.1
 [Version 1.0]
@@ -121,3 +124,12 @@ Many thanks to both of them for their hard work on this plugin.
   - Added timeout between ports, switched to sync instead of async events
 [Version 0.1]
   - Initial update
+
+=============
+ Config Chgs
+=============
+[Version 2]
+  - Add disableEconomy
+  - Add and enhance documentation
+[Version 1]
+  - Initial release
