@@ -69,6 +69,7 @@ Many thanks to both of them for their hard work on this plugin.
  Changes
 =============
 [Version 1.1]
+  - Add customizable messages for players to use their own or translate the plugin
   - Add option to disable economy even if detected, allowing use of all slab types
   - Fix a Null Pointer Exception on servers that do not have an economy installed
 [Version 1.0.1]
@@ -130,6 +131,7 @@ Many thanks to both of them for their hard work on this plugin.
 =============
 [Version 2]
   - Add disableEconomy
+  - Add customizable messages
   - Add and enhance documentation
 [Version 1]
   - Initial release

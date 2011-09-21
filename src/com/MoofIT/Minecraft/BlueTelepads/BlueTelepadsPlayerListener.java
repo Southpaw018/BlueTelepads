@@ -26,7 +26,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	}
 
 	public static void msgPlayer(Player player,String msg) {
-		player.sendMessage(ChatColor.DARK_AQUA + "[BlueTelepads] " + ChatColor.AQUA + msg);
+		if (msg != "") player.sendMessage(ChatColor.DARK_AQUA + "[BlueTelepads] " + ChatColor.AQUA + msg);
 	}
 
 	public boolean isTelepadLapis(Block lapisBlock) {
@@ -147,20 +147,20 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			if (receiverLapis != null) {
 				//Verify permissions
 				if (!player.hasPermission("bluetelepads.use")) {
-					msgPlayer(player,"You do not have permission to use telepads.");
+					msgPlayer(player,plugin.BlueTelepadsMessages.get("Permissions.Use").toString());
 					return;
 				}
 
 				//Verify distance
 				if (!TelepadsWithinDistance(senderLapis,receiverLapis)) {
-					msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + senderLapis.getLocation().distance(receiverLapis.getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
+					msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Error.Distance").toString() + " (Distance: " + senderLapis.getLocation().distance(receiverLapis.getLocation()) + ", Max Allowed:" + plugin.maxDistance + ")");
 					return;
 				}
 				boolean isFree;
 				if (player.hasPermission("bluetelepads.alwaysfree")) isFree = true;
 				else isFree = isTelepadFree(senderLapis);
 				if (plugin.Method != null && !isFree && !plugin.Method.getAccount(player.getName()).hasEnough(plugin.teleportCost)) {
-					msgPlayer(player,ChatColor.RED + "You don't have enough to pay for a teleport.");
+					msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Economy.InsufficientFunds").toString());
 					return;
 				}
 				
@@ -171,18 +171,18 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 					if (!plugin.disableTeleportWait) {
 						if (receiverSign.getLine(3).equals("")) {
-							message = "Preparing to send you! Stand on the center of the pad.";
+							message = plugin.BlueTelepadsMessages.get("Core.TeleportWaitNoName").toString() + " " + plugin.BlueTelepadsMessages.get("Core.WaitInstruction").toString();
 						} else {
-							message = "Preparing to send you to "
-								 + ChatColor.YELLOW + receiverSign.getLine(3)
-								 + ChatColor.AQUA + "! Stand on the center of the pad.";
+							message = plugin.BlueTelepadsMessages.get("Core.TeleportWaitWithName").toString()
+								+ " " + ChatColor.YELLOW + receiverSign.getLine(3)
+								+ ChatColor.AQUA + "! " + plugin.BlueTelepadsMessages.get("Core.WaitInstruction").toString();
 						}
 					} else {
 						if (receiverSign.getLine(3).equals("")) {
-							message = "You have been teleported!";
+							message = plugin.BlueTelepadsMessages.get("Core.NoWaitNoName").toString();
 						} else {
-							message = "You have been teleported to "
-								 + ChatColor.YELLOW + receiverSign.getLine(3);
+							message = plugin.BlueTelepadsMessages.get("Core.NoWaitWithName").toString()
+								+ " " + ChatColor.YELLOW + receiverSign.getLine(3);
 						}
 					}
 					msgPlayer(player,message);
@@ -202,18 +202,17 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))) {
 			//Verify permissions
 			if (!player.hasPermission("bluetelepads.create")) {			
-				msgPlayer(player,"You do not have permission to create a telepad!");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Permission.Create").toString());
 				return;
 			}
 			if (isTelepadFree(event.getClickedBlock(),true) && !player.hasPermission("bluetelepads.createfree")) {
-				msgPlayer(player,"You do not have permission to create a free telepad.");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Permission.CreateFree").toString());
 				return;
 			}
 			
 			if (getTelepadLapisReceiver(event.getClickedBlock().getRelative(BlockFace.DOWN)) != null) {
-				msgPlayer(player,"Error: This telepad seems to be linked already!");
-				msgPlayer(player,ChatColor.YELLOW + "You can reset it by breaking the pressure pad on top of it, then clicking the lapis with redstone.");
-
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Error.AlreadyLinked").toString());
+				msgPlayer(player,ChatColor.YELLOW + plugin.BlueTelepadsMessages.get("Error.AlreadyLinkedInstruction").toString());
 				return;
 			}
 
@@ -221,13 +220,13 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			if (!lapisLinks.containsKey(player.getName())) {
 				//Initial telepad click
 				lapisLinks.put(player.getName(),event.getClickedBlock().getRelative(BlockFace.DOWN).getLocation());
-				msgPlayer(player,"Telepad location stored!");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Core.LocationStored").toString());
 				return;
 			} else {
 				//They have a stored location, and right clicked  a telepad lapis, so remove the temp location
 				if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					lapisLinks.remove(player.getName());
-					msgPlayer(player,"Telepad location ditched! (right clicked)");
+					msgPlayer(player,plugin.BlueTelepadsMessages.get("Core.ProcessReset").toString());
 					return;
 				} else {
 					//Setting up the second link
@@ -237,20 +236,20 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 						Block secondLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
 						if (!TelepadsWithinDistance(firstLapis,secondLapis)) {
-							msgPlayer(player,ChatColor.RED + "Error: Telepads are too far apart! (Distance:" + firstLapis.getLocation().distance(event.getClickedBlock().getLocation()) + ",MaxAllowed:" + plugin.maxDistance + ")");
+							msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Error.Distance").toString() + " (Distance: " + firstLapis.getLocation().distance(event.getClickedBlock().getLocation()) + ", Max Allowed:" + plugin.maxDistance + ")");
 							return;
 						}
 
 						//The same telepad?
 						if (firstLapis == secondLapis) {
-							msgPlayer(player,ChatColor.RED + "Error: You cannot connect a telepad to itself.");
+							msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Error.Reflexive").toString());
 							lapisLinks.remove(player.getName());
 							return;
 						}
 
 						lapisLinks.remove(player.getName());
 						linkTelepadLapisReceivers(firstLapis,event.getClickedBlock().getRelative(BlockFace.DOWN));
-						msgPlayer(player,"Telepad location transferred!");
+						msgPlayer(player,plugin.BlueTelepadsMessages.get("Core.Activated").toString());
 						return;
 					}
 				}
@@ -270,7 +269,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 				resetSign.setLine(2,"");
 				resetSign.update();
 
-				msgPlayer(player,"Telepad Reset!");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Core.Reset").toString());
 
 				return;
 			}
@@ -299,11 +298,11 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 			senderPadCenter.setZ(senderPadCenter.getBlockZ() + 0.5);
 
 			if (senderPadCenter.distance(player.getLocation()) > 1.1 || senderPadCenter.getBlockY() != player.getLocation().getBlockY()) {
-				msgPlayer(player,"You're not on the center of the pad! Cancelling teleport.");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Error.PlayerMoved").toString());
 				return;
 			}
 			if (!this.disableTeleportWait) {
-				msgPlayer(player,"Here goes nothing!");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Core.Teleport").toString());
 			}
 
 			Location sendTo = receiver.getRelative(BlockFace.UP,2).getLocation();
@@ -351,7 +350,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 
 			if (plugin.Method != null && !isFree && plugin.teleportCost > 0) {
 				plugin.Method.getAccount(player.getName()).subtract(plugin.teleportCost);
-				msgPlayer(player,"You have been charged " + plugin.teleportCost + ".");
+				msgPlayer(player,plugin.BlueTelepadsMessages.get("Economy.Charged").toString() + plugin.teleportCost + ".");
 			}
 			player.teleport(sendTo);
 

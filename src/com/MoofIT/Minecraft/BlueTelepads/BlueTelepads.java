@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.bukkit.util.config.Configuration;
@@ -52,6 +53,35 @@ public class BlueTelepads extends JavaPlugin {
 	public double teleportCost = 0;
 	public byte telepadSurroundingNormal = 0;
 	public byte telepadSurroundingFree = 1;
+
+	public TreeMap<String, Object> BlueTelepadsMessages = new TreeMap<String, Object>() {
+		private static final long serialVersionUID = 1L;
+		{
+			put("Error.Distance","Error: Telepads are too far apart!");
+			put("Error.AlreadyLinked","Error: This telepad seems to be linked already!");
+			put("Error.AlreadyLinkedInstruction","You can reset it by breaking the pressure pad on top of it, then tapping the lapis with redstone.");
+			put("Error.Reflexive","Error: You cannot connect a telepad to itself.");
+			put("Error.PlayerMoved","You're not on the center of the pad! Cancelling teleport.");
+
+			put("Core.TeleportWaitNoName","Preparing to send you!");
+			put("Core.TeleportWaitWithName","Preparing to send you to");
+			put("Core.WaitInstruction","Stand on the center of the pad.");
+			put("Core.NoWaitNoName","You have been teleported!");
+			put("Core.NoWaitWithName","You have been teleported to");
+			put("Core.LocationStored","Telepad location stored.");
+			put("Core.ProcessReset","Link process reset.");
+			put("Core.Activated","Telepad activated!");
+			put("Core.Teleport","Here goes nothing!");
+			put("Core.Reset","Telepad reset.");
+
+			put("Economy.InsufficientFunds","You don't have enough to pay for a teleport.");
+			put("Economy.Charged","You have been charged");
+
+			put("Permission.Use","You do not have permission to use telepads.");
+			put("Permission.Create","You do not have permission to create a telepad!");
+			put("Permission.CreateFree","You do not have permission to create a free telepad.");
+		}
+	};
 
 	//Config versioning
 	private int configVer = 0;
@@ -124,6 +154,13 @@ public class BlueTelepads extends JavaPlugin {
 		teleportCost = config.getDouble("Economy.teleportCost", teleportCost);
 		telepadSurroundingNormal = (byte)config.getInt("Economy.telepadSurroundingNormal", telepadSurroundingNormal);
 		telepadSurroundingFree = (byte)config.getInt("Economy.telepadSurroundingFree", telepadSurroundingFree);
+
+		//Messages
+		try {
+			BlueTelepadsMessages = (TreeMap<String, Object>)config.getNode("BlueTelepadsMessages").getAll();
+		} catch (NullPointerException e) {
+			log.warning("[BlueTelepads] Configuration failure while loading BlueTelepadsMessages. Using defaults.");
+		}
 	}
 
 	//returns: true, loaded; false, not loaded OR new
