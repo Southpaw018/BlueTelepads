@@ -51,7 +51,7 @@ BlueTelepadsMessages:
         PlayerMoved: "You're not on the center of the pad! Cancelling teleport."
     Economy:
         InsufficientFunds: "You don't have enough to pay for a teleport."
-    	Charged: "You have been charged"
+        Charged: "You have been charged"
     Permission:
         Use: "You do not have permission to use telepads."
         Create: "You do not have permission to create a telepad!"
