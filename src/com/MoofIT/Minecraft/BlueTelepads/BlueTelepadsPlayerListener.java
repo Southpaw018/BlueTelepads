@@ -26,7 +26,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 	}
 
 	public static void msgPlayer(Player player,String msg) {
-		if (msg != "") player.sendMessage(ChatColor.DARK_AQUA + "[BlueTelepads] " + ChatColor.AQUA + msg);
+		if (!msg.isEmpty()) player.sendMessage(ChatColor.DARK_AQUA + "[BlueTelepads] " + ChatColor.AQUA + msg);
 	}
 
 	public boolean isTelepadLapis(Block lapisBlock) {
@@ -42,7 +42,9 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		int slabID = lapisBlock.getRelative(BlockFace.NORTH).getTypeId();
 
 		if (slabID != 43 && (plugin.allowSingleSlabs == true && slabID != 44)) return false;
-		if (!plugin.disableEconomy || (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree)) return false;
+		if (slabType != plugin.telepadSurroundingNormal && slabType != plugin.telepadSurroundingFree) {
+			if (!plugin.disableEconomy) return false;
+		}
 
 		BlockFace[] surroundingChecks = {BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH};
 		for (BlockFace check : surroundingChecks) {
@@ -142,7 +144,6 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		&& !teleportingPlayers.contains(player)) {
 			Block senderLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 			Block receiverLapis = getTelepadLapisReceiver(senderLapis);
-
 			//Verify receiver is a working telepad
 			if (receiverLapis != null) {
 				//Verify permissions

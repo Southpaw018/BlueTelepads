@@ -6,7 +6,7 @@ Core:
     #Commonly used center block IDs: Lapis block: 22; Gold block: 41; Diamond block: 57; Moss stone: 48
     telepadCenterID: 22
 
-    #Put the player on the slab across from the sign instead of on the pressure plate
+    #Put the player on the slab across from the sign instead of on the pressure plate. Useful alternative to long cooldowns on high latency servers
     useSlabAsDestination: false
 
     #Allow both single and double slabs to be used, else only allow double slabs
@@ -27,7 +27,7 @@ Economy:
     disableEconomy: false
     teleportCost: 0
 
-    #Stone: 0; Sandstone: 1; Wood: 2; Cobblestone: 3
+    #Stone: 0; Sandstone: 1; Wood: 2; Cobblestone: 3; Brick: 4; Stone Brick: 5
     telepadSurroundingNormal: 0 
     telepadSurroundingFree: 1
 BlueTelepadsMessages:

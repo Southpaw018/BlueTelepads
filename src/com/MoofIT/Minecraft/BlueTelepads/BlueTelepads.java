@@ -164,7 +164,6 @@ public class BlueTelepads extends JavaPlugin {
 	}
 
 	//returns: true, loaded; false, not loaded OR new
-	
 	//TODO Javadoc
 	private boolean loadRegister() {
 		try {
