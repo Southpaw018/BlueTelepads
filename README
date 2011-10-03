@@ -70,8 +70,9 @@ Many thanks to both of them for their hard work on this plugin.
 =============
 [Version 1.1]
   - Add customizable messages for players to use their own or translate the plugin
-  - Add option to disable economy even if detected, allowing use of all slab types
+  - Add option to disable economy even if detected, allowing use of all slab types on all pads
   - Fix a Null Pointer Exception on servers that do not have an economy installed
+  - Add 1.8 slab types
 [Version 1.0.1]
   - Fix bad Register.jar link
 [Version 1.0]
