@@ -3,17 +3,19 @@ package com.MoofIT.Minecraft.BlueTelepads;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 
-public class BlueTelepadsBlockListener extends BlockListener {
+public class BlueTelepadsBlockListener implements Listener {
 	//private BlueTelepads plugin;
 
 	public BlueTelepadsBlockListener(BlueTelepads instance) {
 		//this.plugin = instance;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
 

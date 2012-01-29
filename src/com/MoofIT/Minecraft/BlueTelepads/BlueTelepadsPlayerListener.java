@@ -1,6 +1,7 @@
 package com.MoofIT.Minecraft.BlueTelepads;
 
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.World;
 
-public class BlueTelepadsPlayerListener extends PlayerListener {
+public class BlueTelepadsPlayerListener implements Listener {
 	private final BlueTelepads plugin;
 	private static HashMap<String, Location> lapisLinks  = new HashMap<String, Location>();
 	private static HashMap<String, Long> teleportTimeouts = new HashMap<String, Long>();
@@ -133,7 +134,7 @@ public class BlueTelepadsPlayerListener extends PlayerListener {
 		return false;
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		//Using a telepad, note we verify the timeout here after checking if it's a telepad

@@ -13,9 +13,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import org.bukkit.util.config.Configuration;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
@@ -33,7 +31,7 @@ public class BlueTelepads extends JavaPlugin {
 	public static Logger log;
 	public PluginManager pm;
 	public PluginDescriptionFile pdfFile;
-	private Configuration config;
+	private FileConfiguration config;
 
 	public Method Method = null;
 
@@ -96,10 +94,9 @@ public class BlueTelepads extends JavaPlugin {
 		if (!loadRegister()) return;
 		if (versionCheck) versionCheck();
 
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.High, this);
+		pm.registerEvents(playerListener,this);
+		pm.registerEvents(serverListener,this);
+		pm.registerEvents(blockListener,this);
 
 		log.info(pdfFile.getName() + " v." + pdfFile.getVersion() + " is enabled.");
 	}
@@ -112,8 +109,8 @@ public class BlueTelepads extends JavaPlugin {
 	}
 
 	private void loadConfig() {
-		config = this.getConfiguration();
-		config.load();
+		this.reloadConfig();
+		config = this.getConfig();
 
 		configVer = config.getInt("configVer", configVer);
 		if (configVer == 0) {
@@ -157,7 +154,7 @@ public class BlueTelepads extends JavaPlugin {
 
 		//Messages
 		try {
-			BlueTelepadsMessages = (TreeMap<String, Object>)config.getNode("BlueTelepadsMessages").getAll();
+			BlueTelepadsMessages = (TreeMap<String, Object>)config.getConfigurationSection("BlueTelepadsMessages").getValues(true);
 		} catch (NullPointerException e) {
 			log.warning("[BlueTelepads] Configuration failure while loading BlueTelepadsMessages. Using defaults.");
 		}
