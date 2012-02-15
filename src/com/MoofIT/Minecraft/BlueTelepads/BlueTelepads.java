@@ -144,16 +144,12 @@ public class BlueTelepads extends JavaPlugin {
 
 	 private boolean setupEconomy() {
 		if (pm.getPlugin("Vault") == null) {
+			log.severe("[BlueTelepads] Vault not detected. Permissions and economy disabled.");
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		econ = rsp.getProvider();
-		return econ != null; //TODO 1.2 test to ensure plugin gracefully fails without vault installed
-/*		try {
-			Class.forName("com.nijikokun.register.payment.Methods");
-			serverListener = new BlueTelepadsServerListener(this);
-			return true;
-		} catch (ClassNotFoundException e) {*/
+		return econ != null;
 	 }
 
 	public void versionCheck() {
