@@ -352,7 +352,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 
 			if (BlueTelepads.econ != null && !isFree && plugin.teleportCost > 0) {
 				BlueTelepads.econ.withdrawPlayer(player.getName(), plugin.teleportCost);
-				msgPlayer(player,BlueTelepads.econ.format(plugin.teleportCost) + " has been withdrawn from your account.");
+				msgPlayer(player,ChatColor.GOLD + BlueTelepads.econ.format(plugin.teleportCost) + ChatColor.AQUA + " has been withdrawn from your account.");
 			}
 			player.teleport(sendTo);
 

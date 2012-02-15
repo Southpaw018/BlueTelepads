@@ -109,8 +109,10 @@ public class BlueTelepads extends JavaPlugin {
 
 		configVer = config.getInt("configVer", configVer);
 		if (configVer == 0) {
+			log.info("[BlueTelepads] Configuration error or no config file found. Generating default config file.");
 			saveDefaultConfig();
-			log.info("[BlueTelepads] Configuration error or no config file found. Copying default config file from JAR.");
+			this.reloadConfig(); //hack to force good data into configs TODO 1.3: proper defaults
+			config = this.getConfig();
 		}
 		else if (configVer < configCurrent) {
 			log.warning("[BlueTelepads] Your config file is out of date! Delete your config and reload to see the new options. Proceeding using set options from config file and defaults for new options..." );
@@ -146,7 +148,7 @@ public class BlueTelepads extends JavaPlugin {
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		econ = rsp.getProvider();
-		return econ != null;
+		return econ != null; //TODO 1.2 test to ensure plugin gracefully fails without vault installed
 /*		try {
 			Class.forName("com.nijikokun.register.payment.Methods");
 			serverListener = new BlueTelepadsServerListener(this);
