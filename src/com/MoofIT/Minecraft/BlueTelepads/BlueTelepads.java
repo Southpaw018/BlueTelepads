@@ -1,23 +1,21 @@
 package com.MoofIT.Minecraft.BlueTelepads;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.logging.Logger;
+
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
-import com.nijikokun.register.payment.Method;
+
 
 /**
  * @author Jim Drey
@@ -26,14 +24,13 @@ import com.nijikokun.register.payment.Method;
 public class BlueTelepads extends JavaPlugin {
 	private final BlueTelepadsPlayerListener playerListener = new BlueTelepadsPlayerListener(this);
 	private final BlueTelepadsBlockListener blockListener = new BlueTelepadsBlockListener(this);
-	private BlueTelepadsServerListener serverListener;
 
 	public static Logger log;
 	public PluginManager pm;
 	public PluginDescriptionFile pdfFile;
 	private FileConfiguration config;
 
-	public Method Method = null;
+	public static Economy econ = null;
 
 	//Config defaults
 	public int maxDistance = 0;
@@ -52,7 +49,7 @@ public class BlueTelepads extends JavaPlugin {
 	public byte telepadSurroundingNormal = 0;
 	public byte telepadSurroundingFree = 1;
 
-	public TreeMap<String, Object> BlueTelepadsMessages = new TreeMap<String, Object>() {
+	public HashMap<String, Object> BlueTelepadsMessages = new HashMap<String, Object>() {
 		private static final long serialVersionUID = 1L;
 		{
 			put("Error.Distance","Error: Telepads are too far apart!");
@@ -91,20 +88,18 @@ public class BlueTelepads extends JavaPlugin {
 		pdfFile = getDescription();
 
 		loadConfig();
-		if (!loadRegister()) return;
+		setupEconomy();
 		if (versionCheck) versionCheck();
 
 		pm.registerEvents(playerListener,this);
-		pm.registerEvents(serverListener,this);
 		pm.registerEvents(blockListener,this);
 
-		log.info(pdfFile.getName() + " v." + pdfFile.getVersion() + " is enabled.");
+		log.info("BlueTelepads " + getDescription().getVersion() + " is enabled.");
 	}
 
 	public void onDisable() {
 		log.info("[BlueTelepads] Shutting down.");
 		pdfFile = null;
-		Method = null;
 		pm = null;
 	}
 
@@ -114,23 +109,8 @@ public class BlueTelepads extends JavaPlugin {
 
 		configVer = config.getInt("configVer", configVer);
 		if (configVer == 0) {
-			try {
-				log.info("[BlueTelepads] Configuration error or no config file found. Downloading default config file...");
-				if (!new File(getDataFolder().toString()).exists()) {
-					new File(getDataFolder().toString()).mkdir();
-				}
-				URL config = new URL("https://raw.github.com/Southpaw018/BlueTelepads/master/config.yml");
-				ReadableByteChannel rbc = Channels.newChannel(config.openStream());
-				FileOutputStream fos = new FileOutputStream(this.getDataFolder().getPath() + "/config.yml");
-				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-			} catch (MalformedURLException ex) {
-				log.warning("[BlueTelepads] Error accessing default config file URL: " + ex);
-			} catch (FileNotFoundException ex) {
-				log.warning("[BlueTelepads] Error accessing default config file URL: " + ex);
-			} catch (IOException ex) {
-				log.warning("[BlueTelepads] Error downloading default config file: " + ex);
-			}
-
+			saveDefaultConfig();
+			log.info("[BlueTelepads] Configuration error or no config file found. Copying default config file from JAR.");
 		}
 		else if (configVer < configCurrent) {
 			log.warning("[BlueTelepads] Your config file is out of date! Delete your config and reload to see the new options. Proceeding using set options from config file and defaults for new options..." );
@@ -154,42 +134,25 @@ public class BlueTelepads extends JavaPlugin {
 
 		//Messages
 		try {
-			BlueTelepadsMessages = (TreeMap<String, Object>)config.getConfigurationSection("BlueTelepadsMessages").getValues(true);
+			BlueTelepadsMessages = (HashMap<String, Object>)config.getConfigurationSection("BlueTelepadsMessages").getValues(true);
 		} catch (NullPointerException e) {
 			log.warning("[BlueTelepads] Configuration failure while loading BlueTelepadsMessages. Using defaults.");
 		}
 	}
 
-	//returns: true, loaded; false, not loaded OR new
-	//TODO Javadoc
-	private boolean loadRegister() {
-		try {
+	 private boolean setupEconomy() {
+		if (pm.getPlugin("Vault") == null) {
+			return false;
+		}
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		econ = rsp.getProvider();
+		return econ != null;
+/*		try {
 			Class.forName("com.nijikokun.register.payment.Methods");
 			serverListener = new BlueTelepadsServerListener(this);
 			return true;
-		} catch (ClassNotFoundException e) {
-			try {
-				BlueTelepads.log.info("[BlueTelepads] Register library not found! Downloading...");
-				if (!new File("lib").isDirectory())
-					if (!new File("lib").mkdir())
-						BlueTelepads.log.severe("[BlueTelepads] Error creating lib directory. Please make sure Craftbukkit has permissions to write to the Minecraft directory and there is no file named \"lib\" in that location.");
-				URL Register = new URL("http://www.moofit.com/minecraft/Register.jar");
-				ReadableByteChannel rbc = Channels.newChannel(Register.openStream());
-				FileOutputStream fos = new FileOutputStream("lib/Register.jar");
-				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-				BlueTelepads.log.info("[BlueTelepads] Register library downloaded. Server reboot required to load.");
-			} catch (MalformedURLException ex) {
-				BlueTelepads.log.warning("[BlueTelepads] Error accessing Register lib URL: " + ex);
-			} catch (FileNotFoundException ex) {
-				BlueTelepads.log.warning("[BlueTelepads] Error accessing Register lib URL: " + ex);
-			} catch (IOException ex) {
-				BlueTelepads.log.warning("[BlueTelepads] Error downloading Register lib: " + ex);
-			} finally {
-				pm.disablePlugin(this);
-			}
-			return false;
-		}
-	}
+		} catch (ClassNotFoundException e) {*/
+	 }
 
 	public void versionCheck() {
 		String thisVersion = getDescription().getVersion();
@@ -218,6 +181,4 @@ public class BlueTelepads extends JavaPlugin {
 			log.warning("[BlueTelepads] Error checking for update.");
 		}
 	}
-
-	//TODO combine config and register lib file writing code into a function
 }

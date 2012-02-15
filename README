@@ -68,6 +68,10 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.2]
+  - Updated listeners to new Bukkit API
+  - Updated config to new Bukkit API
+  - Switched economy lib from Register to Vault
 [Version 1.1]
   - Add customizable messages for players to use their own or translate the plugin
   - Add option to disable economy even if detected, allowing use of all slab types on all pads

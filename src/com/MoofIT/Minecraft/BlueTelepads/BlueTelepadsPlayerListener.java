@@ -161,7 +161,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 				boolean isFree;
 				if (player.hasPermission("bluetelepads.alwaysfree")) isFree = true;
 				else isFree = isTelepadFree(senderLapis);
-				if (plugin.Method != null && !isFree && !plugin.Method.getAccount(player.getName()).hasEnough(plugin.teleportCost)) {
+				if (BlueTelepads.econ != null && !isFree && (BlueTelepads.econ.getBalance(player.getName()) < plugin.teleportCost)) {
 					msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Economy.InsufficientFunds").toString());
 					return;
 				}
@@ -350,9 +350,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 				sendTo.setYaw(player.getLocation().getYaw());
 			}
 
-			if (plugin.Method != null && !isFree && plugin.teleportCost > 0) {
-				plugin.Method.getAccount(player.getName()).subtract(plugin.teleportCost);
-				msgPlayer(player,plugin.BlueTelepadsMessages.get("Economy.Charged").toString() + plugin.teleportCost + ".");
+			if (BlueTelepads.econ != null && !isFree && plugin.teleportCost > 0) {
+				BlueTelepads.econ.withdrawPlayer(player.getName(), plugin.teleportCost);
+				msgPlayer(player,BlueTelepads.econ.format(plugin.teleportCost) + " has been withdrawn from your account.");
 			}
 			player.teleport(sendTo);
 
