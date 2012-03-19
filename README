@@ -68,6 +68,10 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.2.1]
+  - Compiled against Craftbukkkit b1.2.3-R0.2 (2060).
+  - Implemented the disableEconomy option (oops)
+  - KNOWN ISSUE: Vault appears to have an issue with the current beta. set disableEconomy to true to work around for the time being.
 [Version 1.2]
   - Updated listeners to new Bukkit API
   - Updated config to new Bukkit API
