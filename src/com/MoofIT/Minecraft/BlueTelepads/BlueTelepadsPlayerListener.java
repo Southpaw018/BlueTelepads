@@ -181,7 +181,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 							message = plugin.BlueTelepadsMessages.get("Core.TeleportWaitNoName").toString() + " " + plugin.BlueTelepadsMessages.get("Core.WaitInstruction").toString();
 						} else {
 							message = plugin.BlueTelepadsMessages.get("Core.TeleportWaitWithName").toString()
-								+ " " + ChatColor.YELLOW + receiverSign.getLine(3)
+								+ " " + ChatColor.YELLOW + receiverSign.getLine(3).replace("&", "\u00A7")
 								+ ChatColor.AQUA + "! " + plugin.BlueTelepadsMessages.get("Core.WaitInstruction").toString();
 						}
 					} else {
