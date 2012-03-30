@@ -68,8 +68,13 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.2.2]
+  - Compiled against Craftbukkit 1.2.4-R1.0 (2126)
+  - Compiled against Vault 1.2.13
+  - You can now use ampersand-based color codes in destination names 
+  - BT will now track pads and force the plates to pop back up 1 second after they're used (works around MC 1.2.3+ bug)
 [Version 1.2.1]
-  - Compiled against Craftbukkkit b1.2.3-R0.2 (2060).
+  - Compiled against Craftbukkkit b1.2.3-R0.2 (2060)
   - Implemented the disableEconomy option (oops)
   - KNOWN ISSUE: Vault appears to have an issue with the current beta. set disableEconomy to true to work around for the time being.
 [Version 1.2]
