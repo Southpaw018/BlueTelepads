@@ -362,8 +362,26 @@ public class BlueTelepadsPlayerListener implements Listener {
 				}
 			}
 			player.teleport(sendTo);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadReset(senderPadCenter), 20L);
 
 			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,3) * 1000);
+		}
+	}
+
+	private class BluePadReset implements Runnable {
+		private final Location pressurePlateLoc;
+
+		BluePadReset(Location pressurePlateLoc) {
+			this.pressurePlateLoc = pressurePlateLoc;
+		}
+
+		public void run() {
+			Block pressurePlate = pressurePlateLoc.getBlock();
+			BlueTelepads.log.info("[BlueTelepads] [DEBUG] " + pressurePlate.getData());
+			if (pressurePlate.getData() == 0x1) {
+				pressurePlate.setData((byte)0);
+			}
+			BlueTelepads.log.info("[BlueTelepads] [DEBUG] " + pressurePlate.getData());			
 		}
 	}
 }
