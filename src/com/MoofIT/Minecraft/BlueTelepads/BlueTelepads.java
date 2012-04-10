@@ -148,7 +148,8 @@ public class BlueTelepads extends JavaPlugin {
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		econ = rsp.getProvider();
+		if (rsp != null) econ = rsp.getProvider();
+		else disableEconomy = true;
 		return econ != null;
 	 }
 
