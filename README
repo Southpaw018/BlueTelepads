@@ -68,6 +68,8 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.2.3]
+  - Fix error when a server had no economy plugins at all (thanks, snowy007) 
 [Version 1.2.2]
   - Compiled against Craftbukkit 1.2.4-R1.0 (2126)
   - Compiled against Vault 1.2.13
