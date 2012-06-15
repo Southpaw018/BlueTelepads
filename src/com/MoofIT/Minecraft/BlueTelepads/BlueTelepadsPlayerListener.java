@@ -65,8 +65,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 		return false; 
 	}
 	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
-		if (isTelepadLapis(lapisBlock) && lapisBlock.getRelative(BlockFace.NORTH).getData() == plugin.telepadSurroundingFree) return true;
-		return false; 
+		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingNormal) != 0) return false;
+		return true; 
 	}
 
 	private String toHex(int number) {
@@ -163,7 +163,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 					isFree = true;
 				}
 				else {
-					if (player.hasPermission("bluetelepads.alwaysfree")) isFree = true;
+					if (!plugin.disableAlwaysFree && player.hasPermission("bluetelepads.alwaysfree")) isFree = true; // TOBAST MODIFIED
 					else isFree = isTelepadFree(senderLapis);
 					if (!isFree && BlueTelepads.econ != null && (BlueTelepads.econ.getBalance(player.getName()) < plugin.teleportCost)) {
 						msgPlayer(player,ChatColor.RED + plugin.BlueTelepadsMessages.get("Economy.InsufficientFunds").toString());

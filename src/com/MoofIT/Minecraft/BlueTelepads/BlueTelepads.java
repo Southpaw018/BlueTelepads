@@ -45,6 +45,7 @@ public class BlueTelepads extends JavaPlugin {
 	public int telepadCooldown = 5;
 
 	public boolean disableEconomy = false;
+	public boolean disableAlwaysFree = false;
 	public double teleportCost = 0;
 	public byte telepadSurroundingNormal = 0;
 	public byte telepadSurroundingFree = 1;
@@ -130,6 +131,7 @@ public class BlueTelepads extends JavaPlugin {
 		telepadCooldown = config.getInt("Time.telepadCooldown", telepadCooldown);
 
 		disableEconomy = config.getBoolean("Economy.disableEconomy", disableEconomy);
+		disableAlwaysFree = config.getBoolean("Economy.disableAlwaysFree", disableAlwaysFree);
 		teleportCost = config.getDouble("Economy.teleportCost", teleportCost);
 		telepadSurroundingNormal = (byte)config.getInt("Economy.telepadSurroundingNormal", telepadSurroundingNormal);
 		telepadSurroundingFree = (byte)config.getInt("Economy.telepadSurroundingFree", telepadSurroundingFree);
