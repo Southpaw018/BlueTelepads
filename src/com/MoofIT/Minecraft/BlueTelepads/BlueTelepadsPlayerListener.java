@@ -58,15 +58,12 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 
 	public boolean isTelepadFree(Block lapisBlock) {
-		Sign sign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
-		String[] line0 = sign.getLine(0).split(":");
-		if (line0.length != 2 || !line0[1].equals("F")) return false;
-		if (isTelepadFree(lapisBlock,false)) return true;
-		return false; 
+		return isTelepadFree(lapisBlock, true); // Better that way IMHO.
 	}
 	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
-		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingNormal) != 0) return false;
-		return true; 
+		if (isTelepadLapis(lapisBlock) && plugin.telepadSurroundingFree == 2 && (lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 126 || lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 125)) return true; // wooden slab
+		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingFree) != 0) return true;
+		return false; 
 	}
 
 	private String toHex(int number) {
