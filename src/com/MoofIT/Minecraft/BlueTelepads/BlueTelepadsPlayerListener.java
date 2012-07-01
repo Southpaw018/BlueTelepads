@@ -3,9 +3,15 @@ package com.MoofIT.Minecraft.BlueTelepads;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collection;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.block.Block;
@@ -14,6 +20,10 @@ import org.bukkit.block.Sign;
 import org.bukkit.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Entity;
 import org.bukkit.World;
 
 public class BlueTelepadsPlayerListener implements Listener {
@@ -21,9 +31,13 @@ public class BlueTelepadsPlayerListener implements Listener {
 	private static HashMap<String, Location> lapisLinks  = new HashMap<String, Location>();
 	private static HashMap<String, Long> teleportTimeouts = new HashMap<String, Long>();
 	private static HashSet<Player> teleportingPlayers = new HashSet<Player>();
+	private static HashMap<String, ArrayList<Entity> > playersPets = new HashMap<String, ArrayList<Entity> >();
+	
+	private java.util.logging.Logger log=java.util.logging.Logger.getLogger("Minecraft"); // DEBUG TODO
 
 	public BlueTelepadsPlayerListener(BlueTelepads instance) {
 		this.plugin = instance;
+		reloadPetsList();
 	}
 
 	public static void msgPlayer(Player player,String msg) {
@@ -378,5 +392,73 @@ public class BlueTelepadsPlayerListener implements Listener {
 				pressurePlate.setData((byte)0);
 			}			
 		}
+	}
+
+	/// Adds a freshly tamed animal to a player's pets list
+	@EventHandler
+	public void onEntityTameEvent(EntityTameEvent event) {
+		String owner=((OfflinePlayer)event.getOwner()).getName();
+		if(!isTameable(event.getEntity()))
+			return;
+		appendTamed(owner, event.getEntity());
+	}
+
+	/// Fully reload the pets list
+	private void reloadPetsList() {
+		List<World> worlds=plugin.getServer().getWorlds();
+
+		// For each world, search each tamed animals and associate them to their owners
+		for(World world : worlds) {
+			Collection<Entity> tameables = new ArrayList<Entity>();
+			tameables.addAll(world.getEntitiesByClass(Ocelot.class));
+			tameables.addAll(world.getEntitiesByClass(Wolf.class));
+			for(Entity t : tameables) {
+				if(((Tameable)t).getOwner() == null)
+					continue;
+				appendTamed(((OfflinePlayer)((Tameable)t).getOwner()).getName(), t);
+			}
+		}
+	}
+
+	/// Monitors pets death
+	@EventHandler
+	public void onEntityDeathEvent(EntityDeathEvent event) {
+		if(event.getEntity() instanceof Tameable && ((Tameable)event.getEntity()).getOwner() != null) { // Entity is tameable and tamed
+			removeTamed(((OfflinePlayer)((Tameable)event.getEntity()).getOwner()).getName(), event.getEntity());
+		}
+	}
+
+	/// Adds a pet to a player's pets list
+	private void appendTamed(String owner, Entity tamed) {
+		if(playersPets.get(owner) == null) {
+			ArrayList<Entity> pets=new ArrayList<Entity>();
+			playersPets.put(owner, pets);
+		}
+		playersPets.get(owner).add(tamed);
+	}
+
+	/// Removes a pet from a player's pets list
+	private void removeTamed(String owner, Entity tamed) {
+		if(playersPets.get(owner) == null) // dafuq?!
+			return;
+		playersPets.get(owner).remove(tamed);
+	}
+	
+	/// Checks if an entity is tameable
+	private boolean isTameable(Entity e) {
+		if(e instanceof Tameable)
+			return true;
+		return false;
+	}
+
+	/// Gets the list of pets following a player
+	private List<Entity> getFollowingPets(String player) {
+		ArrayList<Entity> pets=playersPets.get(player), following=new ArrayList<Entity>();
+		
+		for(Entity e : pets) {
+			if((e instanceof Ocelot && !((Ocelot)e).isSitting()) || (e instanceof Wolf && !((Wolf)e).isSitting()))
+				following.add(e);
+		}
+		return following;
 	}
 }

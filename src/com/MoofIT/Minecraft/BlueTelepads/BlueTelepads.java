@@ -22,8 +22,8 @@ import org.bukkit.plugin.PluginManager;
  *
  */
 public class BlueTelepads extends JavaPlugin {
-	private final BlueTelepadsPlayerListener playerListener = new BlueTelepadsPlayerListener(this);
-	private final BlueTelepadsBlockListener blockListener = new BlueTelepadsBlockListener(this);
+	private BlueTelepadsPlayerListener playerListener;
+	private BlueTelepadsBlockListener blockListener;
 
 	public static Logger log;
 	public PluginManager pm;
@@ -39,6 +39,7 @@ public class BlueTelepads extends JavaPlugin {
 	public boolean useSlabAsDestination = false;
 	public boolean allowSingleSlabs = false;
 	public boolean versionCheck = true;
+	public boolean teleportPets = true;
 
 	public boolean disableTeleportWait = false;
 	public int sendWait = 3;
@@ -49,6 +50,7 @@ public class BlueTelepads extends JavaPlugin {
 	public double teleportCost = 0;
 	public byte telepadSurroundingNormal = 0;
 	public byte telepadSurroundingFree = 1;
+
 
 	public HashMap<String, Object> BlueTelepadsMessages = new HashMap<String, Object>() {
 		private static final long serialVersionUID = 1L;
@@ -84,6 +86,9 @@ public class BlueTelepads extends JavaPlugin {
 	private final int configCurrent = 2;
 
 	public void onEnable() {
+		playerListener = new BlueTelepadsPlayerListener(this);
+		blockListener = new BlueTelepadsBlockListener(this);
+
 		log = Logger.getLogger("Minecraft");
 		pm = getServer().getPluginManager();
 		pdfFile = getDescription();
@@ -125,6 +130,7 @@ public class BlueTelepads extends JavaPlugin {
 		useSlabAsDestination = config.getBoolean("Core.useSlabAsDestination", useSlabAsDestination);
 		allowSingleSlabs = config.getBoolean("Core.allowSingleSlabs", allowSingleSlabs);
 		versionCheck = config.getBoolean("Core.versionCheck", versionCheck);
+		teleportPets = config.getBoolean("Core.teleportPets", teleportPets);
 
 		disableTeleportWait = config.getBoolean("Time.disableTeleportWait",disableTeleportWait);
 		sendWait = config.getInt("Time.sendWait", sendWait);
