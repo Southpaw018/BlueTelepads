@@ -33,10 +33,11 @@ public class BlueTelepadsPlayerListener implements Listener {
 	private static HashMap<String, Long> teleportTimeouts = new HashMap<String, Long>();
 	private static HashSet<Player> teleportingPlayers = new HashSet<Player>();
 	private static HashMap<String, ArrayList<Entity> > playersPets = new HashMap<String, ArrayList<Entity> >();
-	
+
 	public BlueTelepadsPlayerListener(BlueTelepads instance) {
 		this.plugin = instance;
-		reloadPetsList();
+		if(plugin.teleportPets)
+			reloadPetsList();
 	}
 
 	public static void msgPlayer(Player player,String msg) {
@@ -103,7 +104,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 			if (world == null) {
 				return null;
 			}
-		
+
 			Block receiverLapis = world.getBlockAt(toInt(sXYZ[0]),toInt(sXYZ[1]),toInt(sXYZ[2]));
 
 			if (isTelepadLapis(receiverLapis)) {
@@ -149,10 +150,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 		Player player = event.getPlayer();
 		//Using a telepad, note we verify the timeout here after checking if it's a telepad
 		if (event.getAction() == Action.PHYSICAL
-		&& event.getClickedBlock() != null
-		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))
-		&& (!teleportTimeouts.containsKey(player.getName()) || teleportTimeouts.get(player.getName()) < System.currentTimeMillis())
-		&& !teleportingPlayers.contains(player)) {
+				&& event.getClickedBlock() != null
+				&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))
+				&& (!teleportTimeouts.containsKey(player.getName()) || teleportTimeouts.get(player.getName()) < System.currentTimeMillis())
+				&& !teleportingPlayers.contains(player)) {
 			Block senderLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
 			Block receiverLapis = getTelepadLapisReceiver(senderLapis);
 			//Verify receiver is a working telepad
@@ -180,9 +181,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 						return;
 					}
 				}
-				
+
 				Sign receiverSign = (Sign)receiverLapis.getRelative(BlockFace.DOWN).getState();
-			
+
 				if (!plugin.disableTeleportMessage) {
 					String message;
 
@@ -209,14 +210,14 @@ public class BlueTelepadsPlayerListener implements Listener {
 					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,senderLapis,receiverLapis,isFree,plugin.disableTeleportWait));
 				} else {
 					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadTeleport(player,senderLapis,receiverLapis,isFree,plugin.disableTeleportWait),plugin.sendWait * 20L);
-			   }
+				}
 			}
-		}
+				}
 		//Creating a telepad link
 		else if (event.getItem() != null
-		&& event.getItem().getType() == Material.REDSTONE
-		&& event.getClickedBlock() != null
-		&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))) {
+				&& event.getItem().getType() == Material.REDSTONE
+				&& event.getClickedBlock() != null
+				&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))) {
 			//Verify permissions
 			if (!player.hasPermission("bluetelepads.create")) {			
 				msgPlayer(player,plugin.BlueTelepadsMessages.get("Permission.Create").toString());
@@ -226,7 +227,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 				msgPlayer(player,plugin.BlueTelepadsMessages.get("Permission.CreateFree").toString());
 				return;
 			}
-			
+
 			if (getTelepadLapisReceiver(event.getClickedBlock().getRelative(BlockFace.DOWN)) != null) {
 				msgPlayer(player,plugin.BlueTelepadsMessages.get("Error.AlreadyLinked").toString());
 				msgPlayer(player,ChatColor.YELLOW + plugin.BlueTelepadsMessages.get("Error.AlreadyLinkedInstruction").toString());
@@ -271,12 +272,12 @@ public class BlueTelepadsPlayerListener implements Listener {
 					}
 				}
 			}
-		}
+				}
 		//Resetting telepad
 		else if (event.getItem() != null
-		&& event.getItem().getType() == Material.REDSTONE
-		&& event.getClickedBlock() != null
-		&& event.getClickedBlock().getTypeId() == plugin.telepadCenterID) {
+				&& event.getItem().getType() == Material.REDSTONE
+				&& event.getClickedBlock() != null
+				&& event.getClickedBlock().getTypeId() == plugin.telepadCenterID) {
 			Block resetLapis = event.getClickedBlock();
 			if (isTelepadLapis(resetLapis, true)) {
 				Sign resetSign = (Sign)resetLapis.getRelative(BlockFace.DOWN).getState();
@@ -290,7 +291,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 
 				return;
 			}
-		}
+				}
 	}
 
 	private class BluePadTeleport implements Runnable {
@@ -372,7 +373,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 				}
 			}
 			player.teleport(sendTo);
-			teleportPlayerPets(player);
+
+			if(plugin.teleportPets)
+				teleportPlayerPets(player); // Teleport pets with their owner
 
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadReset(senderPadCenter), 20L);
 
@@ -398,10 +401,12 @@ public class BlueTelepadsPlayerListener implements Listener {
 	/// Adds a freshly tamed animal to a player's pets list
 	@EventHandler
 	public void onEntityTameEvent(EntityTameEvent event) {
-		String owner=((OfflinePlayer)event.getOwner()).getName();
-		if(!isTameable(event.getEntity()))
-			return;
-		appendTamed(owner, event.getEntity());
+		if(plugin.teleportPets) {
+			String owner=((OfflinePlayer)event.getOwner()).getName();
+			if(!isTameable(event.getEntity()))
+				return;
+			appendTamed(owner, event.getEntity());
+		}
 	}
 
 	/// Fully reload the pets list
@@ -424,8 +429,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 	/// Monitors pets death
 	@EventHandler
 	public void onEntityDeathEvent(EntityDeathEvent event) {
-		if(event.getEntity() instanceof Tameable && ((Tameable)event.getEntity()).getOwner() != null) { // Entity is tameable and tamed
-			removeTamed(((OfflinePlayer)((Tameable)event.getEntity()).getOwner()).getName(), event.getEntity());
+		if(plugin.teleportPets) {
+			if(event.getEntity() instanceof Tameable && ((Tameable)event.getEntity()).getOwner() != null) { // Entity is tameable and tamed
+				removeTamed(((OfflinePlayer)((Tameable)event.getEntity()).getOwner()).getName(), event.getEntity());
+			}
 		}
 	}
 
@@ -444,7 +451,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 			return;
 		playersPets.get(owner).remove(tamed);
 	}
-	
+
 	/// Checks if an entity is tameable
 	private boolean isTameable(Entity e) {
 		if(e instanceof Tameable)
@@ -455,7 +462,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 	/// Gets the list of pets following a player
 	private List<Entity> getFollowingPets(String player) {
 		ArrayList<Entity> pets=playersPets.get(player), following=new ArrayList<Entity>();
-		
+
 		for(Entity e : pets) {
 			if((e instanceof Ocelot && !((Ocelot)e).isSitting()) || (e instanceof Wolf && !((Wolf)e).isSitting()))
 				following.add(e);
@@ -467,7 +474,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 		List<Entity> followingPets=getFollowingPets(player.getName());
 		for(Entity entityPet : followingPets) {
 			if(entityPet.getWorld() == player.getWorld()) {
-				entityPet.teleport(player); // TODO allow teleportation between worlds
+				entityPet.teleport(player);
 			}
 			else { // We have to "teleport" manually the entity
 				if(!(entityPet instanceof LivingEntity))
