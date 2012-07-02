@@ -72,9 +72,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 
 	public boolean isTelepadFree(Block lapisBlock) {
-		return isTelepadFree(lapisBlock, true); // Better that way IMHO.
+		return isTelepadFree(lapisBlock, true); // Better that way IMHO, at least for small servers. Modified by Tobast.
 	}
-	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
+	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) { // Modified by Tobast
 		if (isTelepadLapis(lapisBlock) && plugin.telepadSurroundingFree == 2 && (lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 126 || lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 125)) return true; // wooden slab
 		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingFree) != 0) return true;
 		return false; 
@@ -374,8 +374,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 			}
 			player.teleport(sendTo);
 
+			// Added by Tobast
 			if(plugin.teleportPets)
 				teleportPlayerPets(player); // Teleport pets with their owner
+			// End added by Tobast
 
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadReset(senderPadCenter), 20L);
 
@@ -397,6 +399,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 			}			
 		}
 	}
+
+	// Added by Tobast
 
 	/// Adds a freshly tamed animal to a player's pets list
 	@EventHandler
@@ -512,4 +516,6 @@ public class BlueTelepadsPlayerListener implements Listener {
 			}
 		}
 	}
+
+	// End added by Tobast
 }
