@@ -24,6 +24,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.World;
 
 public class BlueTelepadsPlayerListener implements Listener {
@@ -33,8 +34,6 @@ public class BlueTelepadsPlayerListener implements Listener {
 	private static HashSet<Player> teleportingPlayers = new HashSet<Player>();
 	private static HashMap<String, ArrayList<Entity> > playersPets = new HashMap<String, ArrayList<Entity> >();
 	
-	private java.util.logging.Logger log=java.util.logging.Logger.getLogger("Minecraft"); // DEBUG TODO
-
 	public BlueTelepadsPlayerListener(BlueTelepads instance) {
 		this.plugin = instance;
 		reloadPetsList();
@@ -373,10 +372,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 				}
 			}
 			player.teleport(sendTo);
-			List<Entity> followingPets=getFollowingPets(player.getName());
-			for(Entity pet : followingPets) {
-				pet.teleport(player); // TODO allow teleportation between worlds
-			}
+			teleportPlayerPets(player);
+
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadReset(senderPadCenter), 20L);
 
 			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,3) * 1000);
@@ -464,5 +461,48 @@ public class BlueTelepadsPlayerListener implements Listener {
 				following.add(e);
 		}
 		return following;
+	}
+
+	private void teleportPlayerPets(Player player) {
+		List<Entity> followingPets=getFollowingPets(player.getName());
+		for(Entity entityPet : followingPets) {
+			if(entityPet.getWorld() == player.getWorld()) {
+				entityPet.teleport(player); // TODO allow teleportation between worlds
+			}
+			else { // We have to "teleport" manually the entity
+				if(!(entityPet instanceof LivingEntity))
+					continue;
+
+				LivingEntity newEntity=null, pet=(LivingEntity)entityPet;
+				if(pet instanceof Ocelot) {
+					newEntity = player.getWorld().spawnCreature(player.getLocation(), org.bukkit.entity.EntityType.OCELOT);
+					((Ocelot)newEntity).setCatType(((Ocelot)pet).getCatType());
+					((Ocelot)newEntity).setAge(((Ocelot)pet).getAge());
+					((Ocelot)newEntity).setAgeLock(((Ocelot)pet).getAgeLock());
+				}
+				else if(pet instanceof Wolf) {
+					newEntity = player.getWorld().spawnCreature(player.getLocation(), org.bukkit.entity.EntityType.WOLF);
+					((Wolf)newEntity).setAge(((Wolf)pet).getAge());
+					((Wolf)newEntity).setAgeLock(((Wolf)pet).getAgeLock());
+				}
+				else
+					continue;
+
+				Tameable newTameable=(Tameable)newEntity, oldTameable=(Tameable)pet;
+				newTameable.setTamed(oldTameable.isTamed());
+				newTameable.setOwner(oldTameable.getOwner());
+
+				newEntity.setHealth(pet.getHealth());
+				newEntity.setTicksLived(pet.getTicksLived());
+
+				// Delete the old pet
+				pet.setHealth(0);
+				pet.remove();
+
+				// Replace in the pets list
+				playersPets.get(player.getName()).remove(entityPet);
+				playersPets.get(player.getName()).add(newEntity);
+			}
+		}
 	}
 }
