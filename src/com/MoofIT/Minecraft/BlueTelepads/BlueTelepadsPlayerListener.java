@@ -373,6 +373,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 				}
 			}
 			player.teleport(sendTo);
+			List<Entity> followingPets=getFollowingPets(player.getName());
+			for(Entity pet : followingPets) {
+				pet.teleport(player); // TODO allow teleportation between worlds
+			}
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,new BluePadReset(senderPadCenter), 20L);
 
 			teleportTimeouts.put(player.getName(),System.currentTimeMillis() + Math.min(plugin.telepadCooldown,3) * 1000);
