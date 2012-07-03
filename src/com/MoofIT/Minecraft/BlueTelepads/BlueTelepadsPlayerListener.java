@@ -467,6 +467,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 	private List<Entity> getFollowingPets(String player) {
 		ArrayList<Entity> pets=playersPets.get(player), following=new ArrayList<Entity>();
 
+		if(pets==null)
+			return new ArrayList<Entity>();
 		for(Entity e : pets) {
 			if((e instanceof Ocelot && !((Ocelot)e).isSitting()) || (e instanceof Wolf && !((Wolf)e).isSitting()))
 				following.add(e);
