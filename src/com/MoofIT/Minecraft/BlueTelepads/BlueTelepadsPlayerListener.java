@@ -156,9 +156,18 @@ public class BlueTelepadsPlayerListener implements Listener {
 	private void convertV1Pad(Block lapisBlock) {
 		Sign padSign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
 		String[] line0 =  padSign.getLine(0).split(":");
+
 		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || !(line0[1].equals("T") || line0[1].equals("F"))) return;
+
 		padSign.setLine(0, ChatColor.DARK_BLUE + "BlueTelepads" + ChatColor.BLACK + ":" + line0[1] + ":2");
 		padSign.setLine(2,toHex(lapisBlock.getX()) + ":" + toHex(lapisBlock.getY(),true) + ":" + toHex(lapisBlock.getZ()));
+
+		BlockFace[] faceChecks = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+		for (BlockFace dir : faceChecks) {
+			Block slabBlock = lapisBlock.getRelative(dir);
+			if (slabBlock.getTypeId() == 125) slabBlock.setTypeIdAndData(43, (byte)0, false); 
+			else if (slabBlock.getTypeId() == 126) slabBlock.setTypeIdAndData(44, (byte)0, false);
+		}
 	}
 
 	@EventHandler
