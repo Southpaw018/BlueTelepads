@@ -83,7 +83,7 @@ public class BlueTelepads extends JavaPlugin {
 
 	//Config versioning
 	private int configVer = 0;
-	private final int configCurrent = 2;
+	private final int configCurrent = 3;
 
 	public void onEnable() {
 		playerListener = new BlueTelepadsPlayerListener(this);

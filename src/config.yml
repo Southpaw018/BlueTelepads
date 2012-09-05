@@ -12,6 +12,9 @@ Core:
     #Allow both single and double slabs to be used, else only allow double slabs
     allowSingleSlabs: false
 
+    #Teleport pets with the player?
+    teleportPets: true
+
     #Check for new versions on startup
     versionCheck: true
 Time:
@@ -57,4 +60,4 @@ BlueTelepadsMessages:
         Use: "You do not have permission to use telepads."
         Create: "You do not have permission to create a telepad!"
         CreateFree: "You do not have permission to create a free telepad."
-configVer: 2
+configVer: 3
