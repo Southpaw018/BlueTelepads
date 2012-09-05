@@ -45,9 +45,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 
 	public boolean isTelepadLapis(Block lapisBlock) {
+		convertV1Pad(lapisBlock);
 		if (!isTelepadLapis(lapisBlock, false)) return false;
 		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
-		//TODO check for v1 pad and convert
 		return true;
 	}
 	public boolean isTelepadLapis(Block lapisBlock, boolean resetting) {
@@ -81,11 +81,19 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 
 	private String toHex(int number) {
-		return Integer.toHexString(number + 32000);
+		return Integer.toHexString(number + 512000);
+	}
+	private String toHex(int number,boolean isYCoord) {
+		if (!isYCoord) return toHex(number);
+		return Integer.toHexString(number);
 	}
 
 	private int toInt(String hex) {
-		return Integer.parseInt(hex, 16) - 32000;
+		return Integer.parseInt(hex, 16) - 512000;
+	}
+	private int toInt(String hex,boolean isYCoord) {
+		if (!isYCoord) return toInt(hex);
+		return Integer.parseInt(hex, 16);
 	}
 
 	private Block getTelepadLapisReceiver(Block senderLapis) {
@@ -105,7 +113,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 				return null;
 			}
 
-			Block receiverLapis = world.getBlockAt(toInt(sXYZ[0]),toInt(sXYZ[1]),toInt(sXYZ[2]));
+			Block receiverLapis = world.getBlockAt(toInt(sXYZ[0]),toInt(sXYZ[1],true),toInt(sXYZ[2]));
 
 			if (isTelepadLapis(receiverLapis)) {
 				return receiverLapis;
@@ -119,8 +127,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 		Sign slapis1 = (Sign)lapis1.getRelative(BlockFace.DOWN).getState();
 		Sign slapis2 = (Sign)lapis2.getRelative(BlockFace.DOWN).getState();
 
-		slapis1.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis1,true) ? "F" : "P"));
-		slapis2.setLine(0,"BlueTelepads:" + (isTelepadFree(lapis2,true) ? "F" : "P"));
+		slapis1.setLine(0, ChatColor.DARK_BLUE + "BlueTelepad" + ChatColor.BLACK + ":" + (isTelepadFree(lapis1,true) ? "F" : "P") + "2");
+		slapis2.setLine(0, ChatColor.DARK_BLUE + "BlueTelepad" + ChatColor.BLACK + ":" + (isTelepadFree(lapis2,true) ? "F" : "P") + "2");
 
 		slapis1.setLine(1,slapis2.getWorld().getName());
 		slapis2.setLine(1,slapis1.getWorld().getName());
@@ -128,8 +136,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 		Location lLapis1 = lapis1.getLocation();
 		Location lLapis2 = lapis2.getLocation();
 
-		slapis1.setLine(2,toHex(lLapis2.getBlockX()) + ":" + toHex(lLapis2.getBlockY()) + ":" + toHex(lLapis2.getBlockZ()));
-		slapis2.setLine(2,toHex(lLapis1.getBlockX()) + ":" + toHex(lLapis1.getBlockY()) + ":" + toHex(lLapis1.getBlockZ()));
+		slapis1.setLine(2,toHex(lLapis2.getBlockX()) + ":" + toHex(lLapis2.getBlockY(),true) + ":" + toHex(lLapis2.getBlockZ()));
+		slapis2.setLine(2,toHex(lLapis1.getBlockX()) + ":" + toHex(lLapis1.getBlockY(),true) + ":" + toHex(lLapis1.getBlockZ()));
 
 		slapis1.update(true);
 		slapis2.update(true);
@@ -143,6 +151,14 @@ public class BlueTelepadsPlayerListener implements Listener {
 			return true;
 		}
 		return false;
+	}
+
+	private void convertV1Pad(Block lapisBlock) {
+		Sign padSign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
+		String[] line0 =  padSign.getLine(0).split(":");
+		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || !(line0[1].equals("T") || line0[1].equals("F"))) return;
+		padSign.setLine(0, ChatColor.DARK_BLUE + "BlueTelepads" + ChatColor.BLACK + ":" + line0[1] + ":2");
+		padSign.setLine(2,toHex(lapisBlock.getX()) + ":" + toHex(lapisBlock.getY(),true) + ":" + toHex(lapisBlock.getZ()));
 	}
 
 	@EventHandler
