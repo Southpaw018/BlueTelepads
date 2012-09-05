@@ -27,7 +27,8 @@ Economy:
     disableEconomy: false
     teleportCost: 0
 
-    #Stone: 0; Sandstone: 1; Wood: 2; Cobblestone: 3; Brick: 4; Stone Brick: 5
+    #Stone: 0; Sandstone: 1; Cobblestone: 3; Brick: 4; Stone Brick: 5
+    #PLEASE NOTE: Wood slabs were changed in MC 1.3 and were removed in BT 1.3. Note the missing 2 above.
     telepadSurroundingNormal: 0 
     telepadSurroundingFree: 1
 BlueTelepadsMessages:

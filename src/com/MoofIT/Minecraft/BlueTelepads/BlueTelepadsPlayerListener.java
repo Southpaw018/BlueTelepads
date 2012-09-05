@@ -47,6 +47,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 	public boolean isTelepadLapis(Block lapisBlock) {
 		if (!isTelepadLapis(lapisBlock, false)) return false;
 		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
+		//TODO check for v1 pad and convert
 		return true;
 	}
 	public boolean isTelepadLapis(Block lapisBlock, boolean resetting) {
@@ -74,8 +75,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 	public boolean isTelepadFree(Block lapisBlock) {
 		return isTelepadFree(lapisBlock, true); // Better that way IMHO, at least for small servers. Modified by Tobast.
 	}
-	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) { // Modified by Tobast
-		if (isTelepadLapis(lapisBlock) && plugin.telepadSurroundingFree == 2 && (lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 126 || lapisBlock.getRelative(BlockFace.NORTH).getTypeId() == 125)) return true; // wooden slab
+	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
 		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingFree) != 0) return true;
 		return false; 
 	}
