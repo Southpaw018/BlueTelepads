@@ -250,6 +250,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 				return;
 			}
 
+			if (Math.abs(event.getClickedBlock().getX()) > 512000 || Math.abs(event.getClickedBlock().getZ()) > 512000 || Math.abs(event.getClickedBlock().getY()) > 255) { //You are likely to be eaten by a grue.
+				msgPlayer(player, plugin.BlueTelepadsMessages.get("Error.OutOfAbsRange").toString());
+			}
+
 			//Determine the action
 			if (!lapisLinks.containsKey(player.getName())) {
 				//Initial telepad click

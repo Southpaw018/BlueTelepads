@@ -53,6 +53,7 @@ BlueTelepadsMessages:
         AlreadyLinkedInstruction: "You can reset it by breaking the pressure pad on top of it, then tapping the lapis with redstone."
         Reflexive: "Error: You cannot connect a telepad to itself."
         PlayerMoved: "You're not on the center of the pad! Cancelling teleport."
+        OutOfAbsRange: BlueTelepads cannot link telepads at locations this far from 0,0."
     Economy:
         InsufficientFunds: "You don't have enough to pay for a teleport."
         Charged: "You have been charged"

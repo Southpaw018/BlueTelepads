@@ -60,6 +60,7 @@ public class BlueTelepads extends JavaPlugin {
 			put("Error.AlreadyLinkedInstruction","You can reset it by breaking the pressure pad on top of it, then tapping the lapis with redstone.");
 			put("Error.Reflexive","Error: You cannot connect a telepad to itself.");
 			put("Error.PlayerMoved","You're not on the center of the pad! Cancelling teleport.");
+			put("Error.OutOfAbsRange","BlueTelepads cannot link telepads at locations this far from 0,0.");
 
 			put("Core.TeleportWaitNoName","Preparing to send you!");
 			put("Core.TeleportWaitWithName","Preparing to send you to");
