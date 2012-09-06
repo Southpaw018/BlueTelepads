@@ -158,7 +158,9 @@ public class BlueTelepadsPlayerListener implements Listener {
 		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || (!line0[1].equals("P") && !line0[1].equals("F"))) return false;
 
 		padSign.setLine(0, ChatColor.DARK_BLUE + "BLTelepad:" + line0[1] + ":2");
-		padSign.setLine(2,toHex(lapisBlock.getX()) + ":" + toHex(lapisBlock.getY(),true) + ":" + toHex(lapisBlock.getZ()));
+
+		String[] line2 = padSign.getLine(2).split(":");
+		padSign.setLine(2,toHex(Integer.parseInt(line2[0],16) - 32000) + ":" + toHex(Integer.parseInt(line2[1],16) - 32000,true) + ":" + toHex(Integer.parseInt(line2[2],16) - 32000));
 
 		padSign.update();
 
