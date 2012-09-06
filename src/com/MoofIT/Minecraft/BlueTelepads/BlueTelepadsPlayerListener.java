@@ -45,7 +45,6 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 
 	public boolean isTelepadLapis(Block lapisBlock) {
-		convertV1Pad(lapisBlock);
 		if (!isTelepadLapis(lapisBlock, false)) return false;
 		if (lapisBlock.getRelative(BlockFace.UP).getType() != Material.STONE_PLATE) return false;
 		return true;
@@ -127,8 +126,8 @@ public class BlueTelepadsPlayerListener implements Listener {
 		Sign slapis1 = (Sign)lapis1.getRelative(BlockFace.DOWN).getState();
 		Sign slapis2 = (Sign)lapis2.getRelative(BlockFace.DOWN).getState();
 
-		slapis1.setLine(0, ChatColor.DARK_BLUE + "BlueTelepad" + ChatColor.BLACK + ":" + (isTelepadFree(lapis1,true) ? "F" : "P") + "2");
-		slapis2.setLine(0, ChatColor.DARK_BLUE + "BlueTelepad" + ChatColor.BLACK + ":" + (isTelepadFree(lapis2,true) ? "F" : "P") + "2");
+		slapis1.setLine(0, ChatColor.DARK_BLUE + "BLTelepad:" + (isTelepadFree(lapis1,true) ? "F" : "P") + ":2");
+		slapis2.setLine(0, ChatColor.DARK_BLUE + "BLTelepad:" + (isTelepadFree(lapis2,true) ? "F" : "P") + ":2");
 
 		slapis1.setLine(1,slapis2.getWorld().getName());
 		slapis2.setLine(1,slapis1.getWorld().getName());
@@ -153,14 +152,15 @@ public class BlueTelepadsPlayerListener implements Listener {
 		return false;
 	}
 
-	private void convertV1Pad(Block lapisBlock) {
+	private boolean convertV1Pad(Block lapisBlock) {
 		Sign padSign = (Sign)lapisBlock.getRelative(BlockFace.DOWN).getState();
 		String[] line0 =  padSign.getLine(0).split(":");
+		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || (!line0[1].equals("P") && !line0[1].equals("F"))) return false;
 
-		if (line0.length != 2 || !line0[0].equals("BlueTelepads") || !(line0[1].equals("T") || line0[1].equals("F"))) return;
-
-		padSign.setLine(0, ChatColor.DARK_BLUE + "BlueTelepads" + ChatColor.BLACK + ":" + line0[1] + ":2");
+		padSign.setLine(0, ChatColor.DARK_BLUE + "BLTelepad:" + line0[1] + ":2");
 		padSign.setLine(2,toHex(lapisBlock.getX()) + ":" + toHex(lapisBlock.getY(),true) + ":" + toHex(lapisBlock.getZ()));
+
+		padSign.update();
 
 		BlockFace[] faceChecks = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 		for (BlockFace dir : faceChecks) {
@@ -168,6 +168,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 			if (slabBlock.getTypeId() == 125) slabBlock.setTypeIdAndData(43, (byte)0, false); 
 			else if (slabBlock.getTypeId() == 126) slabBlock.setTypeIdAndData(44, (byte)0, false);
 		}
+		return true;
 	}
 
 	@EventHandler
@@ -180,6 +181,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 				&& (!teleportTimeouts.containsKey(player.getName()) || teleportTimeouts.get(player.getName()) < System.currentTimeMillis())
 				&& !teleportingPlayers.contains(player)) {
 			Block senderLapis = event.getClickedBlock().getRelative(BlockFace.DOWN);
+			if (convertV1Pad(senderLapis)) msgPlayer(player,"Telepad converted to pad v2 (BT 1.3).");
 			Block receiverLapis = getTelepadLapisReceiver(senderLapis);
 			//Verify receiver is a working telepad
 			if (receiverLapis != null) {
@@ -515,15 +517,15 @@ public class BlueTelepadsPlayerListener implements Listener {
 				if(!(entityPet instanceof LivingEntity))
 					continue;
 
-				LivingEntity newEntity=null, pet=(LivingEntity)entityPet;
+				Entity newEntity=null, pet=entityPet;
 				if(pet instanceof Ocelot) {
-					newEntity = player.getWorld().spawnCreature(player.getLocation(), org.bukkit.entity.EntityType.OCELOT);
+					newEntity = player.getWorld().spawnEntity(player.getLocation(), org.bukkit.entity.EntityType.OCELOT);
 					((Ocelot)newEntity).setCatType(((Ocelot)pet).getCatType());
 					((Ocelot)newEntity).setAge(((Ocelot)pet).getAge());
 					((Ocelot)newEntity).setAgeLock(((Ocelot)pet).getAgeLock());
 				}
 				else if(pet instanceof Wolf) {
-					newEntity = player.getWorld().spawnCreature(player.getLocation(), org.bukkit.entity.EntityType.WOLF);
+					newEntity = player.getWorld().spawnEntity(player.getLocation(), org.bukkit.entity.EntityType.WOLF);
 					((Wolf)newEntity).setAge(((Wolf)pet).getAge());
 					((Wolf)newEntity).setAgeLock(((Wolf)pet).getAgeLock());
 				}
@@ -534,11 +536,11 @@ public class BlueTelepadsPlayerListener implements Listener {
 				newTameable.setTamed(oldTameable.isTamed());
 				newTameable.setOwner(oldTameable.getOwner());
 
-				newEntity.setHealth(pet.getHealth());
+				((LivingEntity)newEntity).setHealth(((LivingEntity)pet).getHealth());
 				newEntity.setTicksLived(pet.getTicksLived());
 
 				// Delete the old pet
-				pet.setHealth(0);
+				((LivingEntity)pet).setHealth(0);
 				pet.remove();
 
 				// Replace in the pets list

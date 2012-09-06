@@ -25,7 +25,7 @@ public class BlueTelepadsBlockListener implements Listener {
 		Sign sign = (Sign)block.getState();
 		String[] line0 = sign.getLine(0).split(":");
 
-		if (line0.length != 3 || !line0[0].equals(ChatColor.DARK_BLUE + "BlueTelepad" + ChatColor.BLACK) || !sign.getLine(1).equals(sign.getBlock().getWorld().getName())) return;
+		if (line0.length != 3 || !line0[0].equals(ChatColor.DARK_BLUE + "BLTelepad") || !sign.getLine(1).equals(sign.getBlock().getWorld().getName())) return;
 		if (!event.getPlayer().hasPermission("bluetelepads.destroy")) {
 			event.setCancelled(true);
 			sign.update();
