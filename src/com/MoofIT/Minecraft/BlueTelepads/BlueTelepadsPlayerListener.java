@@ -359,6 +359,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 
 			Location sendTo = receiver.getRelative(BlockFace.UP,2).getLocation();
 			sendTo.setX(sendTo.getX() + 0.5);
+			sendTo.setY(sendTo.getY() + 0.5); //work around Bukkit bug causing players to get trapped in the lapis block
 			sendTo.setZ(sendTo.getZ() + 0.5);
 
 			sendTo.setPitch(player.getLocation().getPitch());
