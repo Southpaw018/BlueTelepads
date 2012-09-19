@@ -68,6 +68,11 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Changes
 =============
+[Version 1.3]
+  - Pets now teleport with their owners inter- and intra-world (Code contributed by tobast)
+  - Wood slabs removed as an option. Wood slab pads will magically become smooth stone slab pads when converted from v1 to v2.
+  - Pads updated to v2. Pads will auto convert the first time a player hits the pressure plate.
+  - Pads now support locations up to +/-512,000 x or z. (Thanks, Crazdale)
 [Version 1.2.3]
   - Fix error when a server had no economy plugins at all (thanks, snowy007) 
 [Version 1.2.2]
@@ -145,6 +150,10 @@ Many thanks to both of them for their hard work on this plugin.
 =============
  Config Chgs
 =============
+[Version 3]
+  - Remove wood slabs
+  - Add teleportPets
+  - Add message for absRange error
 [Version 2]
   - Add disableEconomy
   - Add customizable messages
