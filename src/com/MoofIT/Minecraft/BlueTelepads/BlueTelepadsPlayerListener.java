@@ -76,7 +76,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 	}
 	public boolean isTelepadFree(Block lapisBlock, boolean creatingLink) {
 		if (isTelepadLapis(lapisBlock) && (lapisBlock.getRelative(BlockFace.NORTH).getData() & plugin.telepadSurroundingFree) != 0) return true;
-		return false; 
+		return false;
 	}
 
 	private String toHex(int number) {
@@ -167,7 +167,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 		BlockFace[] faceChecks = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 		for (BlockFace dir : faceChecks) {
 			Block slabBlock = lapisBlock.getRelative(dir);
-			if (slabBlock.getTypeId() == 125) slabBlock.setTypeIdAndData(43, (byte)0, false); 
+			if (slabBlock.getTypeId() == 125) slabBlock.setTypeIdAndData(43, (byte)0, false);
 			else if (slabBlock.getTypeId() == 126) slabBlock.setTypeIdAndData(44, (byte)0, false);
 		}
 		return true;
@@ -248,7 +248,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 				&& event.getClickedBlock() != null
 				&& isTelepadLapis(event.getClickedBlock().getRelative(BlockFace.DOWN))) {
 			//Verify permissions
-			if (!player.hasPermission("bluetelepads.create")) {			
+			if (!player.hasPermission("bluetelepads.create")) {
 				msgPlayer(player,plugin.BlueTelepadsMessages.get("Permission.Create").toString());
 				return;
 			}
@@ -377,10 +377,10 @@ public class BlueTelepadsPlayerListener implements Listener {
 						sendTo.setX(sendTo.getX() - 1);
 					}
 					else if (signData < 0xB) {//east
-						sendTo.setZ(sendTo.getZ() + 1);						
+						sendTo.setZ(sendTo.getZ() + 1);
 					}
 					else if (signData < 0xF) {//south
-						sendTo.setX(sendTo.getX() + 1);						
+						sendTo.setX(sendTo.getX() + 1);
 					}
 				}
 			} else if (sign.getType() == Material.WALL_SIGN) {
@@ -431,7 +431,7 @@ public class BlueTelepadsPlayerListener implements Listener {
 			Block pressurePlate = pressurePlateLoc.getBlock();
 			if (pressurePlate.getData() == 0x1) {
 				pressurePlate.setData((byte)0);
-			}			
+			}
 		}
 	}
 
